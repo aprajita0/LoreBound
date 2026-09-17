@@ -1,0 +1,773 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Lorebound design system.
+ * Dark-first private archive palette.
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+
+  --font-serif: "Cormorant Garamond", "Iowan Old Style", Georgia, serif;
+  --font-sans:
+    "Inter Tight", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-plum: var(--plum);
+  --color-forest: var(--forest);
+  --color-wine: var(--wine);
+  --color-mist: var(--mist);
+  --color-parchment: var(--parchment);
+  --color-ember: var(--ember);
+  --color-rose: var(--rose);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  --radius: 0.5rem;
+
+  /* Light theme */
+  --background: oklch(0.965 0.009 85);
+  --foreground: oklch(0.24 0.028 265);
+  --surface: oklch(0.985 0.006 85);
+  --surface-raised: oklch(1 0 0);
+  --card: oklch(0.99 0.005 85);
+  --card-foreground: oklch(0.24 0.028 265);
+  --popover: oklch(0.99 0.005 85);
+  --popover-foreground: oklch(0.24 0.028 265);
+  --primary: oklch(0.34 0.045 265);
+  --primary-foreground: oklch(0.97 0.012 85);
+  --secondary: oklch(0.93 0.012 85);
+  --secondary-foreground: oklch(0.3 0.035 265);
+  --muted: oklch(0.93 0.011 85);
+  --muted-foreground: oklch(0.47 0.022 265);
+  --accent: oklch(0.91 0.02 85);
+  --accent-foreground: oklch(0.28 0.035 265);
+  --destructive: oklch(0.48 0.13 22);
+  --destructive-foreground: oklch(0.97 0.012 85);
+  --border: oklch(0.87 0.014 85);
+  --input: oklch(0.89 0.012 85);
+  --ring: oklch(0.62 0.07 85);
+
+  --gold: oklch(0.6 0.078 82);
+  --gold-soft: oklch(0.72 0.05 85);
+  --plum: oklch(0.44 0.07 330);
+  --forest: oklch(0.45 0.065 155);
+  --wine: oklch(0.42 0.1 18);
+  --mist: oklch(0.55 0.04 240);
+  --parchment: oklch(0.32 0.02 85);
+  --ember: oklch(0.58 0.12 55);
+  --rose: oklch(0.6 0.07 5);
+
+  --chart-1: var(--gold);
+  --chart-2: var(--forest);
+  --chart-3: var(--mist);
+  --chart-4: var(--plum);
+  --chart-5: var(--wine);
+
+  --sidebar: oklch(0.955 0.01 85);
+  --sidebar-foreground: oklch(0.26 0.028 265);
+  --sidebar-primary: oklch(0.34 0.045 265);
+  --sidebar-primary-foreground: oklch(0.97 0.012 85);
+  --sidebar-accent: oklch(0.91 0.02 85);
+  --sidebar-accent-foreground: oklch(0.28 0.035 265);
+  --sidebar-border: oklch(0.87 0.014 85);
+  --sidebar-ring: oklch(0.62 0.07 85);
+}
+
+.dark {
+  --background: oklch(0.155 0.021 264);
+  --foreground: oklch(0.93 0.015 85);
+  --surface: oklch(0.187 0.023 264);
+  --surface-raised: oklch(0.223 0.025 264);
+  --card: oklch(0.195 0.023 264);
+  --card-foreground: oklch(0.93 0.015 85);
+  --popover: oklch(0.205 0.024 264);
+  --popover-foreground: oklch(0.93 0.015 85);
+  --primary: oklch(0.79 0.082 84);
+  --primary-foreground: oklch(0.17 0.022 264);
+  --secondary: oklch(0.255 0.026 264);
+  --secondary-foreground: oklch(0.91 0.015 85);
+  --muted: oklch(0.25 0.024 264);
+  --muted-foreground: oklch(0.73 0.02 250);
+  --accent: oklch(0.29 0.03 264);
+  --accent-foreground: oklch(0.93 0.015 85);
+  --destructive: oklch(0.55 0.14 20);
+  --destructive-foreground: oklch(0.95 0.012 85);
+  --border: oklch(0.33 0.025 264);
+  --input: oklch(0.31 0.025 264);
+  --ring: oklch(0.72 0.07 84);
+
+  --gold: oklch(0.79 0.082 84);
+  --gold-soft: oklch(0.64 0.055 84);
+  --plum: oklch(0.55 0.085 330);
+  --forest: oklch(0.6 0.08 155);
+  --wine: oklch(0.55 0.13 18);
+  --mist: oklch(0.7 0.045 245);
+  --parchment: oklch(0.92 0.025 85);
+  --ember: oklch(0.7 0.13 55);
+  --rose: oklch(0.72 0.075 8);
+
+  --chart-1: var(--gold);
+  --chart-2: var(--forest);
+  --chart-3: var(--mist);
+  --chart-4: var(--plum);
+  --chart-5: var(--wine);
+
+  --sidebar: oklch(0.175 0.022 264);
+  --sidebar-foreground: oklch(0.9 0.015 85);
+  --sidebar-primary: oklch(0.79 0.082 84);
+  --sidebar-primary-foreground: oklch(0.17 0.022 264);
+  --sidebar-accent: oklch(0.26 0.028 264);
+  --sidebar-accent-foreground: oklch(0.93 0.015 85);
+  --sidebar-border: oklch(0.3 0.025 264);
+  --sidebar-ring: oklch(0.72 0.07 84);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    background-color: var(--color-background);
+  }
+
+  body {
+    min-height: 100vh;
+    background-color: transparent;
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv02", "cv03", "ss01";
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: color-mix(in oklch, var(--color-gold) 30%, transparent);
+  }
+}
+
+/* Default background used outside the My Worlds route. */
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+body::before {
+  background:
+    radial-gradient(
+      ellipse 78% 54% at 50% 20%,
+      rgba(87, 111, 147, 0.14),
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse 34% 30% at 82% 31%,
+      rgba(173, 122, 53, 0.055),
+      transparent 74%
+    ),
+    #070b14;
+}
+
+body::after {
+  background:
+    radial-gradient(
+      circle at 4% 12%,
+      rgba(232, 225, 207, 0.36) 0 1px,
+      transparent 1.6px
+    ),
+    radial-gradient(
+      circle at 8% 68%,
+      rgba(232, 225, 207, 0.23) 0 1px,
+      transparent 1.5px
+    ),
+    radial-gradient(
+      circle at 96% 9%,
+      rgba(232, 225, 207, 0.3) 0 1px,
+      transparent 1.5px
+    ),
+    radial-gradient(
+      circle at 92% 72%,
+      rgba(232, 225, 207, 0.2) 0 1px,
+      transparent 1.5px
+    ),
+    radial-gradient(
+      circle at 98% 43%,
+      rgba(232, 225, 207, 0.24) 0 1px,
+      transparent 1.5px
+    );
+  background-repeat: no-repeat;
+  opacity: 0.58;
+}
+
+:root:not(.dark) body::before {
+  background:
+    radial-gradient(
+      ellipse 76% 42% at 50% -8%,
+      rgba(174, 201, 222, 0.23),
+      transparent 74%
+    ),
+    radial-gradient(
+      ellipse 84% 60% at 50% 44%,
+      rgba(255, 249, 233, 0.58),
+      transparent 78%
+    ),
+    #f5f0e4;
+}
+
+:root:not(.dark) body::after {
+  background: none;
+  opacity: 0;
+}
+
+/* My Worlds animated mystical atmosphere. */
+
+body:has(.worlds-sanctuary)::before,
+body:has(.worlds-sanctuary)::after {
+  display: none;
+}
+
+.worlds-sanctuary {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  isolation: isolate;
+}
+
+.worlds-sanctuary > * {
+  position: absolute;
+  pointer-events: none;
+}
+
+.worlds-sanctuary__sky,
+.worlds-sanctuary__stars,
+.worlds-sanctuary__motes,
+.worlds-sanctuary__calm-center,
+.worlds-sanctuary__vignette {
+  inset: 0;
+}
+
+/* Smooth layered night sky. */
+
+.worlds-sanctuary__sky {
+  z-index: 0;
+  background:
+    radial-gradient(
+      ellipse 82% 56% at 48% -10%,
+      rgba(62, 96, 148, 0.34),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 52% 58% at -4% 43%,
+      rgba(32, 91, 91, 0.17),
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse 48% 55% at 104% 34%,
+      rgba(88, 51, 105, 0.17),
+      transparent 72%
+    ),
+    linear-gradient(155deg, #0b172a 0%, #071321 46%, #050b15 100%);
+}
+
+/* Large blurred color pools behind the aurora. */
+
+.worlds-sanctuary__atmosphere {
+  z-index: 1;
+  border-radius: 50%;
+  filter: blur(100px);
+  will-change: transform, opacity;
+}
+
+.worlds-sanctuary__atmosphere--left {
+  top: 8%;
+  left: -17%;
+  width: 52%;
+  height: 60%;
+  background: rgba(37, 113, 113, 0.15);
+  animation: lb-atmosphere-left 42s ease-in-out infinite alternate;
+}
+
+.worlds-sanctuary__atmosphere--right {
+  top: -20%;
+  right: -15%;
+  width: 56%;
+  height: 66%;
+  background: rgba(92, 56, 119, 0.15);
+  animation: lb-atmosphere-right 49s ease-in-out -16s infinite alternate;
+}
+
+/*
+ * Supports either class name so the stylesheet works with both
+ * versions of the background component.
+ */
+
+.worlds-sanctuary__atmosphere--gold,
+.worlds-sanctuary__atmosphere--lower {
+  top: 35%;
+  left: 18%;
+  width: 48%;
+  height: 48%;
+  background: rgba(205, 145, 65, 0.075);
+  animation: lb-atmosphere-gold 38s ease-in-out -9s infinite alternate;
+}
+
+/*
+ * SVG aurora.
+ * Softness and organic distortion are produced by the SVG filter,
+ * not by CSS blur or drop-shadow.
+ */
+
+.worlds-sanctuary__aurora {
+  position: absolute;
+  z-index: 2;
+  top: -14%;
+  left: -10%;
+  width: 120%;
+  height: 92%;
+  overflow: visible;
+  opacity: 0.78;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.worlds-sanctuary__aurora-ribbon {
+  fill: none;
+  stroke-linecap: round;
+  transform-box: fill-box;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+.worlds-sanctuary__aurora-ribbon--far {
+  stroke-width: 130;
+  opacity: 0.42;
+  animation: lb-aurora-far 52s ease-in-out infinite alternate;
+}
+
+.worlds-sanctuary__aurora-ribbon--middle {
+  stroke-width: 105;
+  opacity: 0.34;
+  animation: lb-aurora-middle 44s ease-in-out -13s infinite alternate;
+}
+
+.worlds-sanctuary__aurora-ribbon--near {
+  stroke-width: 82;
+  opacity: 0.28;
+  animation: lb-aurora-near 37s ease-in-out -21s infinite alternate;
+}
+
+/* Stars and small magical lights. */
+
+.worlds-sanctuary__stars,
+.worlds-sanctuary__motes {
+  position: absolute;
+  z-index: 3;
+}
+
+.worlds-sanctuary__star {
+  position: absolute;
+  border-radius: 999px;
+  background: #f7f0df;
+  box-shadow:
+    0 0 5px rgba(244, 238, 220, 0.5),
+    0 0 12px rgba(143, 182, 220, 0.2);
+}
+
+.worlds-sanctuary__star.is-pulsing {
+  animation: lb-star-breathe 5.8s ease-in-out infinite;
+}
+
+.worlds-sanctuary__star.star--3 {
+  animation-delay: -1.2s;
+}
+
+.worlds-sanctuary__star.star--6 {
+  animation-delay: -3.8s;
+}
+
+.worlds-sanctuary__star.star--9 {
+  animation-delay: -2.1s;
+}
+
+.worlds-sanctuary__star.star--12 {
+  animation-delay: -4.6s;
+}
+
+.worlds-sanctuary__star.star--15 {
+  animation-delay: -0.8s;
+}
+
+.worlds-sanctuary__star.star--19 {
+  animation-delay: -3.2s;
+}
+
+.worlds-sanctuary__star.star--23 {
+  animation-delay: -5s;
+}
+
+.worlds-sanctuary__mote {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 999px;
+  background: #e1b45f;
+  box-shadow:
+    0 0 7px 2px rgba(230, 181, 89, 0.62),
+    0 0 20px 4px rgba(198, 133, 48, 0.2);
+  will-change: transform, opacity;
+  animation: lb-mote-drift 12s ease-in-out infinite alternate;
+}
+
+.worlds-sanctuary__mote.mote--1 {
+  animation-duration: 13s;
+  animation-delay: -4s;
+}
+
+.worlds-sanctuary__mote.mote--2 {
+  animation-duration: 16s;
+  animation-delay: -9s;
+}
+
+.worlds-sanctuary__mote.mote--3 {
+  animation-duration: 11s;
+  animation-delay: -2s;
+}
+
+.worlds-sanctuary__mote.mote--4 {
+  animation-duration: 17s;
+  animation-delay: -12s;
+}
+
+.worlds-sanctuary__mote.mote--5 {
+  animation-duration: 14s;
+  animation-delay: -7s;
+}
+
+/*
+ * A calm area behind the main world card keeps its text readable
+ * without turning the background into a flat solid color.
+ */
+
+.worlds-sanctuary__calm-center {
+  z-index: 4;
+  background: radial-gradient(
+    ellipse 58% 54% at 50% 45%,
+    rgba(5, 11, 21, 0.22) 0%,
+    rgba(5, 11, 21, 0.08) 50%,
+    transparent 76%
+  );
+}
+
+.worlds-sanctuary__vignette {
+  z-index: 5;
+  background: radial-gradient(
+    ellipse 92% 88% at 50% 42%,
+    transparent 50%,
+    rgba(1, 4, 11, 0.44) 100%
+  );
+}
+
+/* Aurora motion */
+
+@keyframes lb-aurora-far {
+  from {
+    opacity: 0.3;
+    transform: translate3d(-2%, -1%, 0) scaleY(0.94);
+  }
+
+  to {
+    opacity: 0.46;
+    transform: translate3d(3%, 3%, 0) scaleY(1.08);
+  }
+}
+
+@keyframes lb-aurora-middle {
+  from {
+    opacity: 0.25;
+    transform: translate3d(3%, 1%, 0) scaleY(1.04);
+  }
+
+  to {
+    opacity: 0.4;
+    transform: translate3d(-3%, -2%, 0) scaleY(0.9);
+  }
+}
+
+@keyframes lb-aurora-near {
+  from {
+    opacity: 0.2;
+    transform: translate3d(-1%, 2%, 0) scaleY(0.92);
+  }
+
+  to {
+    opacity: 0.34;
+    transform: translate3d(4%, -1%, 0) scaleY(1.12);
+  }
+}
+
+/* Atmospheric movement */
+
+@keyframes lb-atmosphere-left {
+  from {
+    opacity: 0.62;
+    transform: translate3d(-3%, 1%, 0) scale(0.95);
+  }
+
+  to {
+    opacity: 0.94;
+    transform: translate3d(4%, -2%, 0) scale(1.08);
+  }
+}
+
+@keyframes lb-atmosphere-right {
+  from {
+    opacity: 0.52;
+    transform: translate3d(2%, -2%, 0) scale(1);
+  }
+
+  to {
+    opacity: 0.86;
+    transform: translate3d(-4%, 3%, 0) scale(1.1);
+  }
+}
+
+@keyframes lb-atmosphere-gold {
+  from {
+    opacity: 0.4;
+    transform: translate3d(-2%, 2%, 0) scale(0.94);
+  }
+
+  to {
+    opacity: 0.74;
+    transform: translate3d(3%, -3%, 0) scale(1.08);
+  }
+}
+
+/* Stars and magical motes */
+
+@keyframes lb-star-breathe {
+  0%,
+  100% {
+    opacity: 0.45;
+    filter: brightness(0.78);
+    transform: scale(0.85);
+  }
+
+  50% {
+    opacity: 1;
+    filter: brightness(1.3);
+    transform: scale(1.25);
+  }
+}
+
+@keyframes lb-mote-drift {
+  0% {
+    opacity: 0.08;
+    transform: translate3d(-7px, 14px, 0) scale(0.8);
+  }
+
+  42% {
+    opacity: 0.65;
+  }
+
+  100% {
+    opacity: 0.12;
+    transform: translate3d(13px, -18px, 0) scale(1.08);
+  }
+}
+
+/* Light mode: magical dawn rather than a night sky. */
+
+:root:not(.dark) .worlds-sanctuary__sky {
+  background:
+    radial-gradient(
+      ellipse 75% 46% at 50% -8%,
+      rgba(163, 197, 222, 0.34),
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse 44% 46% at 12% 44%,
+      rgba(229, 195, 130, 0.15),
+      transparent 76%
+    ),
+    radial-gradient(
+      ellipse 46% 42% at 92% 34%,
+      rgba(201, 185, 220, 0.14),
+      transparent 76%
+    ),
+    linear-gradient(160deg, #f8f4e9 0%, #f4efe5 52%, #eee9e2 100%);
+}
+
+:root:not(.dark) .worlds-sanctuary__aurora {
+  opacity: 0.2;
+  mix-blend-mode: multiply;
+}
+
+:root:not(.dark) .worlds-sanctuary__atmosphere {
+  opacity: 0.25;
+}
+
+:root:not(.dark) .worlds-sanctuary__stars,
+:root:not(.dark) .worlds-sanctuary__motes {
+  display: none;
+}
+
+:root:not(.dark) .worlds-sanctuary__calm-center {
+  background: radial-gradient(
+    ellipse 64% 58% at 50% 47%,
+    rgba(255, 252, 244, 0.38),
+    transparent 74%
+  );
+}
+
+:root:not(.dark) .worlds-sanctuary__vignette {
+  background: radial-gradient(
+    ellipse 88% 84% at 50% 42%,
+    transparent 48%,
+    rgba(91, 78, 59, 0.07) 100%
+  );
+}
+
+/* Shared utilities */
+
+@utility font-display {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+@utility rule-gold {
+  border-top: 1px solid
+    color-mix(in oklch, var(--color-gold) 35%, transparent);
+}
+
+@utility text-balance-tight {
+  text-wrap: balance;
+}
+
+@keyframes lb-draw {
+  from {
+    stroke-dashoffset: var(--lb-dash, 400);
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes lb-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@utility animate-rise {
+  animation: lb-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@utility animate-draw {
+  stroke-dasharray: var(--lb-dash, 400);
+  animation: lb-draw 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Accessibility */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .worlds-sanctuary__aurora-ribbon,
+  .worlds-sanctuary__atmosphere,
+  .worlds-sanctuary__star,
+  .worlds-sanctuary__mote {
+    animation: none !important;
+  }
+}
+
+/* Writing Studio prose */
+
+.studio-prose p {
+  margin-bottom: 1.25rem;
+}
+
+.studio-prose p:last-child {
+  margin-bottom: 0;
+}
+
+.studio-prose .scene-break {
+  text-align: center;
+  letter-spacing: 0.5em;
+  color: var(--color-muted-foreground);
+}

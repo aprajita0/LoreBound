@@ -1,0 +1,193 @@
+import type { ContinuityFinding, Note } from "@/types/lorebound";
+
+const P = "prj-terra";
+
+export const terraFindings: ContinuityFinding[] = [
+  {
+    id: "find-ethan-knows",
+    projectId: P,
+    title: "Possible knowledge inconsistency",
+    category: "character-knowledge",
+    severity: "high",
+    confidence: 0.91,
+    explanation:
+      "Ethan refers to Mira as Omir, but Lorebound has no recorded event showing that Ethan learned Mira's identity before this scene.",
+    currentEvidenceId: "ev-ethan-slip",
+    earlierEvidenceId: "ev-ethan-earlier",
+    relatedCharacterIds: ["ch-ethan", "ch-omir"],
+    chapters: [22, 24],
+    suggestedInterpretation:
+      "Either Ethan learned off the page between Chapters 22 and 24, or the Chapter 22 non-recognition is the deliberate setup for a reveal you have not written yet.",
+    status: "unreviewed",
+    decisions: [],
+  },
+  {
+    id: "find-magic-rule",
+    projectId: P,
+    title: "Possible magic-rule conflict",
+    category: "world-rule",
+    severity: "high",
+    confidence: 0.84,
+    explanation:
+      "Omir uses an offensive earth spell, while an approved story rule states that he avoids offensive magic.",
+    currentEvidenceId: "ev-omir-offensive",
+    earlierEvidenceId: "ev-omir-rule",
+    relatedCharacterIds: ["ch-omir"],
+    chapters: [6, 24],
+    suggestedInterpretation:
+      "This may be intentional character development — a vow broken under pressure is a different thing from a rule violation. Mark it intentional to keep the rule and record the break as an arc beat.",
+    status: "unreviewed",
+    decisions: [],
+  },
+  {
+    id: "find-mira-timeline",
+    projectId: P,
+    title: "Identity predates its creation scene",
+    category: "timeline",
+    severity: "medium",
+    confidence: 0.63,
+    explanation:
+      "A reference to Mira's 'practiced smile' in Chapter 20 implies prior use of the identity, but the identity is created in that same scene.",
+    currentEvidenceId: "ev-mirror",
+    relatedCharacterIds: ["ch-omir"],
+    chapters: [20],
+    suggestedInterpretation:
+      "Likely a stylistic flourish rather than an error. Dismiss, or add a line establishing earlier rehearsal.",
+    status: "unreviewed",
+    decisions: [],
+  },
+  {
+    id: "find-lynx-location",
+    projectId: P,
+    title: "Character present in two locations",
+    category: "location",
+    severity: "medium",
+    confidence: 0.71,
+    explanation:
+      "Lynx refuses to enter the harbour quarter in Chapter 19 but casts a shadow inside The Low Lantern in Chapter 23, which is in the harbour quarter.",
+    currentEvidenceId: "ev-lynx-griffin",
+    earlierEvidenceId: "ev-omir-follows",
+    relatedCharacterIds: ["ch-lynx", "ch-omir"],
+    chapters: [19, 23],
+    suggestedInterpretation:
+      "Consider whether the refusal was specific to the delegate's route rather than the district itself.",
+    status: "unreviewed",
+    decisions: [],
+  },
+  {
+    id: "find-ledger-inventory",
+    projectId: P,
+    title: "Object held without reappearance",
+    category: "inventory",
+    severity: "low",
+    confidence: 0.58,
+    explanation:
+      "Omir takes a ledger page in Chapter 23. It is never mentioned again, including in the Chapter 24 confrontation where it would matter most.",
+    currentEvidenceId: "ev-evidence-gather",
+    relatedCharacterIds: ["ch-omir", "ch-delegate"],
+    chapters: [23, 24],
+    suggestedInterpretation: "Either a dropped thread or a deliberate withholding. Flag as foreshadowing if intended.",
+    status: "unreviewed",
+    decisions: [],
+  },
+  {
+    id: "find-bruise",
+    projectId: P,
+    title: "Injury unacknowledged",
+    category: "physical-state",
+    severity: "low",
+    confidence: 0.52,
+    explanation:
+      "Omir's left forearm is bruised in Chapter 23 but he performs a two-handed stone working in Chapter 24 without comment.",
+    currentEvidenceId: "ev-omir-offensive",
+    earlierEvidenceId: "ev-evidence-gather",
+    relatedCharacterIds: ["ch-omir"],
+    chapters: [23, 24],
+    suggestedInterpretation: "A single clause would resolve this.",
+    status: "resolved",
+    decisions: [
+      { id: "dec-1", label: "Marked intentional", at: "Yesterday, 11:04", by: "Aprajita" },
+    ],
+  },
+  {
+    id: "find-arthur-relationship",
+    projectId: P,
+    title: "Relationship state asserted without evidence",
+    category: "relationship",
+    severity: "medium",
+    confidence: 0.66,
+    explanation:
+      "Chapter 22 narration implies Arthur is aware of Omir's regard, but no passage records Arthur registering it.",
+    currentEvidenceId: "ev-arthur-tavern",
+    earlierEvidenceId: "ev-arthur-feel",
+    relatedCharacterIds: ["ch-arthur", "ch-omir"],
+    chapters: [21, 22],
+    suggestedInterpretation:
+      "Keep the ambiguity if Arthur's awareness is meant to stay unresolved — but the narration currently leans further than the evidence does.",
+    status: "unreviewed",
+    decisions: [],
+  },
+];
+
+export const terraNotes: Note[] = [
+  {
+    id: "note-cup",
+    projectId: P,
+    title: "The delegate taps the cup in a pattern",
+    body: "Twice, pause, twice. Same pattern each visit. Decide whether it's a summons or a countdown — it should mean the same thing in Chapter 27 as it does here.",
+    kind: "loose",
+    pinned: true,
+    updatedLabel: "Updated 2 hours ago",
+    links: [
+      { kind: "character", id: "ch-delegate", label: "Sevrin Tal" },
+      { kind: "chapter", id: "cp-22", label: "Chapter 22" },
+      { kind: "secret", id: "sec-delegate-purpose", label: "Why the delegate visits" },
+    ],
+  },
+  {
+    id: "note-vow",
+    projectId: P,
+    title: "Vow residue — mechanics",
+    body: "Residue settles downward and pools at the lowest worked stone. That means the harbour quarter collects everything the upper city does. Use this for the Chapter 26 flood.",
+    kind: "research",
+    pinned: true,
+    updatedLabel: "Updated yesterday",
+    links: [{ kind: "event", id: "evt-24", label: "The vow-breaker plot is discovered" }],
+  },
+  {
+    id: "note-scene",
+    projectId: P,
+    title: "Scene idea — Arthur recognises the hands",
+    body: "He doesn't recognise the face. He recognises the way she sets down a cup. Short scene, no dialogue, end of a chapter.",
+    kind: "scene-idea",
+    pinned: false,
+    updatedLabel: "Updated 3 days ago",
+    links: [
+      { kind: "character", id: "ch-arthur", label: "Arthur Cornelius" },
+      { kind: "secret", id: "sec-mira", label: "Mira is Omir" },
+    ],
+  },
+  {
+    id: "note-ethan",
+    projectId: P,
+    title: "Ethan knows more than he has said",
+    body: "Work out exactly when he learned. If it's Chapter 13 in the archive, the Chapter 22 non-recognition has to be deliberate on his part — which is a much better scene.",
+    kind: "character",
+    pinned: false,
+    updatedLabel: "Updated 4 days ago",
+    links: [
+      { kind: "character", id: "ch-ethan", label: "Ethan Mor" },
+      { kind: "chapter", id: "cp-24", label: "Chapter 24" },
+    ],
+  },
+  {
+    id: "note-lantern",
+    projectId: P,
+    title: "The Low Lantern floor plan",
+    body: "Door faces east. Bar along the north wall. The delegate always sits where he can see the door and cannot be seen from the street.",
+    kind: "research",
+    pinned: false,
+    updatedLabel: "Updated last week",
+    links: [{ kind: "character", id: "ch-bram", label: "Bram Holloway" }],
+  },
+];
