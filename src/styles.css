@@ -771,3 +771,79 @@ body:has(.worlds-sanctuary)::after {
   letter-spacing: 0.5em;
   color: var(--color-muted-foreground);
 }
+
+/* Tiptap manuscript editor */
+
+.tiptap {
+  min-height: 58vh;
+  outline: none;
+}
+
+.tiptap p {
+  margin-bottom: 1.25rem;
+}
+
+.tiptap p:last-child {
+  margin-bottom: 0;
+}
+
+.tiptap h2 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  line-height: 1.25;
+  color: var(--color-foreground);
+}
+
+.tiptap blockquote {
+  margin: 1.75rem 0;
+  border-left: 2px solid
+    color-mix(in oklch, var(--color-gold) 55%, transparent);
+  padding-left: 1.25rem;
+  color: color-mix(
+    in oklch,
+    var(--color-foreground) 82%,
+    var(--color-muted-foreground)
+  );
+  font-style: italic;
+}
+
+.tiptap ul,
+.tiptap ol {
+  margin: 1.25rem 0;
+  padding-left: 1.75rem;
+}
+
+.tiptap ul {
+  list-style: disc;
+}
+
+.tiptap ol {
+  list-style: decimal;
+}
+
+.tiptap li {
+  margin: 0.4rem 0;
+}
+
+.tiptap hr {
+  margin: 2.5rem auto;
+  width: 5rem;
+  border: 0;
+  text-align: center;
+}
+
+.tiptap hr::after {
+  content: "* * *";
+  color: var(--color-gold-soft);
+  letter-spacing: 0.45em;
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  color: var(--color-muted-foreground);
+  pointer-events: none;
+}

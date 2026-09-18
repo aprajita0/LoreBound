@@ -16,6 +16,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as DemoTerraRouteImport } from './routes/demo.terra'
 import { Route as WorldsIndexRouteImport } from './routes/worlds.index'
+import { Route as WorldsWorldIdRouteImport } from './routes/worlds.$worldId'
 import { Route as WorldsNewRouteImport } from './routes/worlds.new'
 import { Route as WorldsTerraRouteImport } from './routes/worlds.terra'
 import { Route as DemoTerraIndexRouteImport } from './routes/demo.terra.index'
@@ -28,6 +29,7 @@ import { Route as DemoTerraPlacesRouteImport } from './routes/demo.terra.places'
 import { Route as DemoTerraRelationshipsRouteImport } from './routes/demo.terra.relationships'
 import { Route as DemoTerraSecretsRouteImport } from './routes/demo.terra.secrets'
 import { Route as DemoTerraTimelineRouteImport } from './routes/demo.terra.timeline'
+import { Route as WorldsWorldIdManuscriptRouteImport } from './routes/worlds.$worldId.manuscript'
 import { Route as WorldsTerraIndexRouteImport } from './routes/worlds.terra.index'
 import { Route as WorldsTerraContinuityRouteImport } from './routes/worlds.terra.continuity'
 import { Route as WorldsTerraKnowledgeRouteImport } from './routes/worlds.terra.knowledge'
@@ -77,6 +79,11 @@ const DemoTerraRoute = DemoTerraRouteImport.update({
 const WorldsIndexRoute = WorldsIndexRouteImport.update({
   id: '/worlds/',
   path: '/worlds/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorldsWorldIdRoute = WorldsWorldIdRouteImport.update({
+  id: '/worlds/$worldId',
+  path: '/worlds/$worldId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WorldsNewRoute = WorldsNewRouteImport.update({
@@ -138,6 +145,11 @@ const DemoTerraTimelineRoute = DemoTerraTimelineRouteImport.update({
   id: '/timeline',
   path: '/timeline',
   getParentRoute: () => DemoTerraRoute,
+} as any)
+const WorldsWorldIdManuscriptRoute = WorldsWorldIdManuscriptRouteImport.update({
+  id: '/manuscript',
+  path: '/manuscript',
+  getParentRoute: () => WorldsWorldIdRoute,
 } as any)
 const WorldsTerraIndexRoute = WorldsTerraIndexRouteImport.update({
   id: '/',
@@ -226,6 +238,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/demo/terra': typeof DemoTerraRouteWithChildren
+  '/worlds/$worldId': typeof WorldsWorldIdRouteWithChildren
   '/worlds/new': typeof WorldsNewRoute
   '/worlds/terra': typeof WorldsTerraRouteWithChildren
   '/worlds/': typeof WorldsIndexRoute
@@ -238,6 +251,7 @@ export interface FileRoutesByFullPath {
   '/demo/terra/relationships': typeof DemoTerraRelationshipsRoute
   '/demo/terra/secrets': typeof DemoTerraSecretsRoute
   '/demo/terra/timeline': typeof DemoTerraTimelineRoute
+  '/worlds/$worldId/manuscript': typeof WorldsWorldIdManuscriptRoute
   '/worlds/terra/continuity': typeof WorldsTerraContinuityRoute
   '/worlds/terra/knowledge': typeof WorldsTerraKnowledgeRoute
   '/worlds/terra/lore': typeof WorldsTerraLoreRoute
@@ -261,6 +275,7 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/worlds/$worldId': typeof WorldsWorldIdRouteWithChildren
   '/worlds/new': typeof WorldsNewRoute
   '/worlds': typeof WorldsIndexRoute
   '/demo/terra/continuity': typeof DemoTerraContinuityRoute
@@ -272,6 +287,7 @@ export interface FileRoutesByTo {
   '/demo/terra/relationships': typeof DemoTerraRelationshipsRoute
   '/demo/terra/secrets': typeof DemoTerraSecretsRoute
   '/demo/terra/timeline': typeof DemoTerraTimelineRoute
+  '/worlds/$worldId/manuscript': typeof WorldsWorldIdManuscriptRoute
   '/worlds/terra/continuity': typeof WorldsTerraContinuityRoute
   '/worlds/terra/knowledge': typeof WorldsTerraKnowledgeRoute
   '/worlds/terra/lore': typeof WorldsTerraLoreRoute
@@ -297,6 +313,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/demo/terra': typeof DemoTerraRouteWithChildren
+  '/worlds/$worldId': typeof WorldsWorldIdRouteWithChildren
   '/worlds/new': typeof WorldsNewRoute
   '/worlds/terra': typeof WorldsTerraRouteWithChildren
   '/worlds/': typeof WorldsIndexRoute
@@ -309,6 +326,7 @@ export interface FileRoutesById {
   '/demo/terra/relationships': typeof DemoTerraRelationshipsRoute
   '/demo/terra/secrets': typeof DemoTerraSecretsRoute
   '/demo/terra/timeline': typeof DemoTerraTimelineRoute
+  '/worlds/$worldId/manuscript': typeof WorldsWorldIdManuscriptRoute
   '/worlds/terra/continuity': typeof WorldsTerraContinuityRoute
   '/worlds/terra/knowledge': typeof WorldsTerraKnowledgeRoute
   '/worlds/terra/lore': typeof WorldsTerraLoreRoute
@@ -335,6 +353,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/demo/terra'
+    | '/worlds/$worldId'
     | '/worlds/new'
     | '/worlds/terra'
     | '/worlds/'
@@ -347,6 +366,7 @@ export interface FileRouteTypes {
     | '/demo/terra/relationships'
     | '/demo/terra/secrets'
     | '/demo/terra/timeline'
+    | '/worlds/$worldId/manuscript'
     | '/worlds/terra/continuity'
     | '/worlds/terra/knowledge'
     | '/worlds/terra/lore'
@@ -370,6 +390,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/signup'
+    | '/worlds/$worldId'
     | '/worlds/new'
     | '/worlds'
     | '/demo/terra/continuity'
@@ -381,6 +402,7 @@ export interface FileRouteTypes {
     | '/demo/terra/relationships'
     | '/demo/terra/secrets'
     | '/demo/terra/timeline'
+    | '/worlds/$worldId/manuscript'
     | '/worlds/terra/continuity'
     | '/worlds/terra/knowledge'
     | '/worlds/terra/lore'
@@ -405,6 +427,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/demo/terra'
+    | '/worlds/$worldId'
     | '/worlds/new'
     | '/worlds/terra'
     | '/worlds/'
@@ -417,6 +440,7 @@ export interface FileRouteTypes {
     | '/demo/terra/relationships'
     | '/demo/terra/secrets'
     | '/demo/terra/timeline'
+    | '/worlds/$worldId/manuscript'
     | '/worlds/terra/continuity'
     | '/worlds/terra/knowledge'
     | '/worlds/terra/lore'
@@ -442,6 +466,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
   DemoTerraRoute: typeof DemoTerraRouteWithChildren
+  WorldsWorldIdRoute: typeof WorldsWorldIdRouteWithChildren
   WorldsNewRoute: typeof WorldsNewRoute
   WorldsTerraRoute: typeof WorldsTerraRouteWithChildren
   WorldsIndexRoute: typeof WorldsIndexRoute
@@ -496,6 +521,13 @@ declare module '@tanstack/react-router' {
       path: '/worlds'
       fullPath: '/worlds/'
       preLoaderRoute: typeof WorldsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/worlds/$worldId': {
+      id: '/worlds/$worldId'
+      path: '/worlds/$worldId'
+      fullPath: '/worlds/$worldId'
+      preLoaderRoute: typeof WorldsWorldIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/worlds/new': {
@@ -581,6 +613,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/demo/terra/timeline'
       preLoaderRoute: typeof DemoTerraTimelineRouteImport
       parentRoute: typeof DemoTerraRoute
+    }
+    '/worlds/$worldId/manuscript': {
+      id: '/worlds/$worldId/manuscript'
+      path: '/manuscript'
+      fullPath: '/worlds/$worldId/manuscript'
+      preLoaderRoute: typeof WorldsWorldIdManuscriptRouteImport
+      parentRoute: typeof WorldsWorldIdRoute
     }
     '/worlds/terra/': {
       id: '/worlds/terra/'
@@ -724,6 +763,18 @@ const DemoTerraRouteWithChildren = DemoTerraRoute._addFileChildren(
   DemoTerraRouteChildren,
 )
 
+interface WorldsWorldIdRouteChildren {
+  WorldsWorldIdManuscriptRoute: typeof WorldsWorldIdManuscriptRoute
+}
+
+const WorldsWorldIdRouteChildren: WorldsWorldIdRouteChildren = {
+  WorldsWorldIdManuscriptRoute: WorldsWorldIdManuscriptRoute,
+}
+
+const WorldsWorldIdRouteWithChildren = WorldsWorldIdRoute._addFileChildren(
+  WorldsWorldIdRouteChildren,
+)
+
 interface WorldsTerraRouteChildren {
   WorldsTerraContinuityRoute: typeof WorldsTerraContinuityRoute
   WorldsTerraKnowledgeRoute: typeof WorldsTerraKnowledgeRoute
@@ -767,6 +818,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
   DemoTerraRoute: DemoTerraRouteWithChildren,
+  WorldsWorldIdRoute: WorldsWorldIdRouteWithChildren,
   WorldsNewRoute: WorldsNewRoute,
   WorldsTerraRoute: WorldsTerraRouteWithChildren,
   WorldsIndexRoute: WorldsIndexRoute,

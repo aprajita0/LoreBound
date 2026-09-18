@@ -316,19 +316,24 @@ function WorldsLibrary() {
                   </dl>
 
                   <div className="mt-7 flex flex-wrap gap-3">
-                    <Button disabled title="The writing workspace is next">
-                      Continue Writing
-                    </Button>
+                      <Button asChild>
+                        <Link
+                          to="/worlds/$worldId/manuscript"
+                          params={{ worldId: featured.id }}
+                        >
+                          Continue Writing
+                        </Link>
+                      </Button>
 
-                    <Button
-                      variant="outline"
-                      className="border-gold/40"
-                      disabled
-                      title="Dynamic world pages are the next milestone"
-                    >
-                      Enter World
-                    </Button>
-                  </div>
+                      <Button asChild variant="outline" className="border-gold/40">
+                        <Link
+                          to="/worlds/$worldId/manuscript"
+                          params={{ worldId: featured.id }}
+                        >
+                          Enter World
+                        </Link>
+                      </Button>
+                    </div>
 
                   <div className="mt-7 border-t border-border/60 pt-5">
                     <p className="flex max-w-xl gap-3 text-sm text-muted-foreground">
