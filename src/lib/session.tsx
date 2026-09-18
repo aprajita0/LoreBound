@@ -7,73 +7,137 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { authService } from "@/services/lorebound";
+import { supabase } from "@/lib/supabase";
+import {
+  authService,
+  mapSupabaseUser,
+  type SignUpResult,
+} from "@/services/auth";
 import type { User } from "@/types/lorebound";
 
 interface SessionValue {
   user: User | null;
   ready: boolean;
   signIn: (email: string, password: string) => Promise<User>;
-  signUp: (name: string, email: string) => Promise<User>;
-  signOut: () => void;
+  signUp: (
+    name: string,
+    email: string,
+    password: string,
+  ) => Promise<SignUpResult>;
+  signOut: () => Promise<void>;
 }
 
-const SessionContext = createContext<SessionValue>({
-  user: null,
-  ready: false,
-  signIn: async () => {
-    throw new Error("no provider");
-  },
-  signUp: async () => {
-    throw new Error("no provider");
-  },
-  signOut: () => {},
-});
+const SessionContext = createContext<SessionValue | undefined>(
+  undefined,
+);
 
-const STORAGE_KEY = "lorebound.session";
-
-export function SessionProvider({ children }: { children: ReactNode }) {
+export function SessionProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const [user, setUser] = useState<User | null>(null);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      try {
-        setUser(JSON.parse(raw) as User);
-      } catch {
-        window.localStorage.removeItem(STORAGE_KEY);
+    let mounted = true;
+
+    async function restoreSession() {
+      const currentUser = await authService.getCurrentUser();
+
+      if (mounted) {
+        setUser(currentUser);
+        setReady(true);
       }
     }
-    setReady(true);
+
+    void restoreSession();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!mounted) {
+        return;
+      }
+
+      setUser(
+        session?.user ? mapSupabaseUser(session.user) : null,
+      );
+
+      setReady(true);
+    });
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
-  const persist = useCallback((next: User | null) => {
-    setUser(next);
-    if (next) window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-    else window.localStorage.removeItem(STORAGE_KEY);
+  const signIn = useCallback(
+    async (email: string, password: string) => {
+      const authenticatedUser = await authService.login(
+        email,
+        password,
+      );
+
+      setUser(authenticatedUser);
+      return authenticatedUser;
+    },
+    [],
+  );
+
+  const signUp = useCallback(
+    async (
+      name: string,
+      email: string,
+      password: string,
+    ) => {
+      const result = await authService.signup(
+        name,
+        email,
+        password,
+      );
+
+      if (!result.requiresEmailConfirmation) {
+        setUser(result.user);
+      }
+
+      return result;
+    },
+    [],
+  );
+
+  const signOut = useCallback(async () => {
+    await authService.logout();
+    setUser(null);
   }, []);
 
   const value = useMemo<SessionValue>(
     () => ({
       user,
       ready,
-      signIn: async (email, password) => {
-        const u = await authService.login(email, password);
-        persist(u);
-        return u;
-      },
-      signUp: async (name, email) => {
-        const u = await authService.signup(name, email);
-        persist(u);
-        return u;
-      },
-      signOut: () => persist(null),
+      signIn,
+      signUp,
+      signOut,
     }),
-    [user, ready, persist],
+    [user, ready, signIn, signUp, signOut],
   );
 
-  return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
+  return (
+    <SessionContext.Provider value={value}>
+      {children}
+    </SessionContext.Provider>
+  );
 }
 
-export const useSession = () => useContext(SessionContext);
+export function useSession(): SessionValue {
+  const context = useContext(SessionContext);
+
+  if (!context) {
+    throw new Error(
+      "useSession must be used inside SessionProvider.",
+    );
+  }
+
+  return context;
+}

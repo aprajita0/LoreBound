@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -14,16 +15,25 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Logo } from "@/components/app/logo";
-import { worldService } from "@/services/lorebound";
+import { createWorld } from "@/services/worlds";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/worlds/new")({
   head: () => ({
     meta: [
       { title: "Create a new world — Lorebound" },
-      { name: "description", content: "Name a world, set its voice, and add a first chapter." },
-      { property: "og:title", content: "Create a new world — Lorebound" },
-      { property: "og:description", content: "Name a world, set its voice, and add a first chapter." },
+      {
+        name: "description",
+        content: "Name a world, set its voice, and add a first chapter.",
+      },
+      {
+        property: "og:title",
+        content: "Create a new world — Lorebound",
+      },
+      {
+        property: "og:description",
+        content: "Name a world, set its voice, and add a first chapter.",
+      },
     ],
   }),
   component: NewWorldPage,
@@ -37,7 +47,14 @@ const GENRES = [
   "Contemporary Romance",
   "Horror",
 ];
-const POVS = ["First person", "Third person limited", "Third person omniscient", "Second person"];
+
+const POVS = [
+  "First person",
+  "Third person limited",
+  "Third person omniscient",
+  "Second person",
+];
+
 const TENSES = ["Past", "Present"];
 
 const steps = [
@@ -50,8 +67,11 @@ const steps = [
 
 function NewWorldPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
   const [step, setStep] = useState(0);
   const [busy, setBusy] = useState(false);
+
   const [form, setForm] = useState({
     title: "",
     genre: "Epic Fantasy",
@@ -63,23 +83,68 @@ function NewWorldPage() {
     chapterText: "",
   });
 
-  const set = (k: keyof typeof form) => (v: string) => setForm((f) => ({ ...f, [k]: v }));
+  const set =
+    (key: keyof typeof form) =>
+    (value: string): void => {
+      setForm((currentForm) => ({
+        ...currentForm,
+        [key]: value,
+      }));
+    };
+
   const current = steps[step]!;
   const canAdvance = step !== 0 || form.title.trim().length > 1;
   const last = step === steps.length - 1;
 
   async function finish() {
+    if (busy) {
+      return;
+    }
+
+    const title = form.title.trim();
+
+    if (title.length < 2) {
+      toast.error("Please enter a world title.");
+      setStep(0);
+      return;
+    }
+
+    const rules = form.rules
+      .split("\n")
+      .map((rule) => rule.trim())
+      .filter(Boolean);
+
     setBusy(true);
+
     try {
-      await worldService.create({
-        title: form.title.trim(),
+      await createWorld({
+        title,
         genre: form.genre,
-        description: form.description,
+        description: form.description.trim(),
         pointOfView: form.pointOfView,
         tense: form.tense,
+        rules,
+        chapterTitle: form.chapterTitle.trim() || "Chapter One",
+        chapterText: form.chapterText,
       });
-      toast.success(`${form.title.trim()} is ready. Add chapters when you're set.`);
-      navigate({ to: "/worlds" });
+
+      await queryClient.invalidateQueries({
+        queryKey: ["worlds"],
+      });
+
+      toast.success(`${title} has been created.`);
+
+      await navigate({
+        to: "/worlds",
+      });
+    } catch (error) {
+      console.error("Unable to create world:", error);
+
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Lorebound could not create your world.",
+      );
     } finally {
       setBusy(false);
     }
@@ -90,6 +155,7 @@ function NewWorldPage() {
       <header className="relative border-b border-border/60">
         <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-5">
           <Logo to="/worlds" />
+
           <Button asChild variant="ghost" size="sm">
             <Link to="/worlds">Cancel</Link>
           </Button>
@@ -97,23 +163,37 @@ function NewWorldPage() {
       </header>
 
       <main className="relative mx-auto max-w-3xl px-5 py-12">
-        <ol className="flex flex-wrap gap-x-5 gap-y-2" aria-label="Progress">
-          {steps.map((s, i) => (
-            <li key={s.key} className="flex items-center gap-2 text-xs">
+        <ol
+          className="flex flex-wrap gap-x-5 gap-y-2"
+          aria-label="Progress"
+        >
+          {steps.map((item, index) => (
+            <li key={item.key} className="flex items-center gap-2 text-xs">
               <span
                 className={cn(
                   "flex size-5 items-center justify-center rounded-full border text-[0.6rem]",
-                  i < step
+                  index < step
                     ? "border-gold/50 bg-gold/15 text-gold"
-                    : i === step
+                    : index === step
                       ? "border-gold bg-gold text-background"
                       : "border-border text-muted-foreground",
                 )}
               >
-                {i < step ? <Check className="size-3" aria-hidden /> : i + 1}
+                {index < step ? (
+                  <Check className="size-3" aria-hidden />
+                ) : (
+                  index + 1
+                )}
               </span>
-              <span className={i === step ? "text-foreground" : "text-muted-foreground"}>
-                {s.title}
+
+              <span
+                className={
+                  index === step
+                    ? "text-foreground"
+                    : "text-muted-foreground"
+                }
+              >
+                {item.title}
               </span>
             </li>
           ))}
@@ -127,8 +207,11 @@ function NewWorldPage() {
             {current.key === "rules" && "What rules govern it?"}
             {current.key === "chapter" && "Add your first chapter."}
           </h1>
+
           <p className="mt-2 text-sm text-muted-foreground">
-            {current.optional ? "Optional — you can skip and set this later." : "Required."}
+            {current.optional
+              ? "Optional — you can skip and set this later."
+              : "Required."}
           </p>
 
           <div className="mt-8 space-y-5">
@@ -136,24 +219,33 @@ function NewWorldPage() {
               <>
                 <div className="space-y-1.5">
                   <Label htmlFor="title">World title</Label>
+
                   <Input
                     id="title"
                     autoFocus
                     value={form.title}
-                    onChange={(e) => set("title")(e.target.value)}
+                    onChange={(event) => set("title")(event.target.value)}
                     placeholder="The Isles of Terra"
+                    disabled={busy}
                   />
                 </div>
+
                 <div className="space-y-1.5">
                   <Label htmlFor="genre">Genre</Label>
-                  <Select value={form.genre} onValueChange={set("genre")}>
+
+                  <Select
+                    value={form.genre}
+                    onValueChange={set("genre")}
+                    disabled={busy}
+                  >
                     <SelectTrigger id="genre">
                       <SelectValue />
                     </SelectTrigger>
+
                     <SelectContent>
-                      {GENRES.map((g) => (
-                        <SelectItem key={g} value={g}>
-                          {g}
+                      {GENRES.map((genre) => (
+                        <SelectItem key={genre} value={genre}>
+                          {genre}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -165,13 +257,15 @@ function NewWorldPage() {
             {current.key === "description" && (
               <div className="space-y-1.5">
                 <Label htmlFor="description">Description</Label>
+
                 <Textarea
                   id="description"
                   rows={4}
                   autoFocus
                   value={form.description}
-                  onChange={(e) => set("description")(e.target.value)}
+                  onChange={(event) => set("description")(event.target.value)}
                   placeholder="A hidden heir follows a foreign delegate through borrowed identities…"
+                  disabled={busy}
                 />
               </div>
             )}
@@ -180,29 +274,42 @@ function NewWorldPage() {
               <div className="grid gap-5 sm:grid-cols-2">
                 <div className="space-y-1.5">
                   <Label htmlFor="pov">Point of view</Label>
-                  <Select value={form.pointOfView} onValueChange={set("pointOfView")}>
+
+                  <Select
+                    value={form.pointOfView}
+                    onValueChange={set("pointOfView")}
+                    disabled={busy}
+                  >
                     <SelectTrigger id="pov">
                       <SelectValue />
                     </SelectTrigger>
+
                     <SelectContent>
-                      {POVS.map((p) => (
-                        <SelectItem key={p} value={p}>
-                          {p}
+                      {POVS.map((pointOfView) => (
+                        <SelectItem key={pointOfView} value={pointOfView}>
+                          {pointOfView}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
+
                 <div className="space-y-1.5">
                   <Label htmlFor="tense">Tense</Label>
-                  <Select value={form.tense} onValueChange={set("tense")}>
+
+                  <Select
+                    value={form.tense}
+                    onValueChange={set("tense")}
+                    disabled={busy}
+                  >
                     <SelectTrigger id="tense">
                       <SelectValue />
                     </SelectTrigger>
+
                     <SelectContent>
-                      {TENSES.map((t) => (
-                        <SelectItem key={t} value={t}>
-                          {t}
+                      {TENSES.map((tense) => (
+                        <SelectItem key={tense} value={tense}>
+                          {tense}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -214,17 +321,22 @@ function NewWorldPage() {
             {current.key === "rules" && (
               <div className="space-y-1.5">
                 <Label htmlFor="rules">World rules</Label>
+
                 <Textarea
                   id="rules"
                   rows={5}
                   autoFocus
                   value={form.rules}
-                  onChange={(e) => set("rules")(e.target.value)}
-                  placeholder={"One rule per line — e.g.\nEarth magic cannot be used offensively without cost.\nA broken vow marks the stone it was sworn on."}
+                  onChange={(event) => set("rules")(event.target.value)}
+                  placeholder={
+                    "One rule per line — e.g.\nEarth magic cannot be used offensively without cost.\nA broken vow marks the stone it was sworn on."
+                  }
+                  disabled={busy}
                 />
+
                 <p className="text-xs text-muted-foreground">
-                  Lorebound checks new chapters against these rules and raises a finding when a
-                  scene contradicts one.
+                  Lorebound will eventually check new chapters against these
+                  rules and raise a finding when a scene contradicts one.
                 </p>
               </div>
             )}
@@ -233,23 +345,32 @@ function NewWorldPage() {
               <>
                 <div className="space-y-1.5">
                   <Label htmlFor="chtitle">Chapter title</Label>
+
                   <Input
                     id="chtitle"
                     autoFocus
                     value={form.chapterTitle}
-                    onChange={(e) => set("chapterTitle")(e.target.value)}
+                    onChange={(event) =>
+                      set("chapterTitle")(event.target.value)
+                    }
                     placeholder="Chapter One"
+                    disabled={busy}
                   />
                 </div>
+
                 <div className="space-y-1.5">
                   <Label htmlFor="chtext">Opening text</Label>
+
                   <Textarea
                     id="chtext"
                     rows={7}
                     value={form.chapterText}
-                    onChange={(e) => set("chapterText")(e.target.value)}
+                    onChange={(event) =>
+                      set("chapterText")(event.target.value)
+                    }
                     placeholder="Paste or write the opening of your manuscript…"
                     className="font-display text-base leading-relaxed"
+                    disabled={busy}
                   />
                 </div>
               </>
@@ -259,25 +380,42 @@ function NewWorldPage() {
           <div className="mt-10 flex items-center justify-between border-t border-border/60 pt-6">
             <Button
               variant="ghost"
-              onClick={() => setStep((s) => Math.max(0, s - 1))}
-              disabled={step === 0}
+              onClick={() => setStep((currentStep) => Math.max(0, currentStep - 1))}
+              disabled={step === 0 || busy}
             >
-              <ArrowLeft className="size-4" /> Back
+              <ArrowLeft className="size-4" />
+              Back
             </Button>
+
             <div className="flex items-center gap-2">
               {current.optional && !last ? (
-                <Button variant="ghost" onClick={() => setStep((s) => s + 1)}>
+                <Button
+                  variant="ghost"
+                  onClick={() => setStep((currentStep) => currentStep + 1)}
+                  disabled={busy}
+                >
                   Skip
                 </Button>
               ) : null}
+
               {last ? (
                 <Button onClick={finish} disabled={busy}>
-                  {busy ? <Loader2 className="size-4 animate-spin" /> : null}
-                  Create World
+                  {busy ? (
+                    <>
+                      <Loader2 className="size-4 animate-spin" />
+                      Creating world...
+                    </>
+                  ) : (
+                    "Create World"
+                  )}
                 </Button>
               ) : (
-                <Button onClick={() => setStep((s) => s + 1)} disabled={!canAdvance}>
-                  Continue <ArrowRight className="size-4" />
+                <Button
+                  onClick={() => setStep((currentStep) => currentStep + 1)}
+                  disabled={!canAdvance || busy}
+                >
+                  Continue
+                  <ArrowRight className="size-4" />
                 </Button>
               )}
             </div>

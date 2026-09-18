@@ -5,7 +5,8 @@
  * directly. Swapping this file for real `fetch` calls against the Express
  * API is the only change the UI should need.
  */
-import { currentUser, projects } from "@/data/worlds";
+export { authService } from "@/services/auth";
+import { projects } from "@/data/worlds";
 import { evidence, evidenceById } from "@/data/evidence";
 import { terraCharacters, terraEntities, terraIdentities } from "@/data/terra-characters";
 import { terraChapters } from "@/data/terra-chapters";
@@ -69,31 +70,6 @@ export class ServiceError extends Error {
   }
 }
 
-/* ------------------------------------------------------------------ user */
-
-export const authService = {
-  async login(email: string, password: string): Promise<User> {
-    await delay(null, 500);
-    if (!email.includes("@") || password.length < 4) {
-      throw new ServiceError("That email and password combination wasn't recognised.");
-    }
-    return structuredCloneSafe(currentUser);
-  },
-  async signup(name: string, email: string): Promise<User> {
-    await delay(null, 600);
-    return { ...currentUser, name: name || currentUser.name, email };
-  },
-  async requestPasswordReset(email: string): Promise<{ sentTo: string }> {
-    await delay(null, 550);
-    if (!email.includes("@")) throw new ServiceError("Enter a valid email address.");
-    return { sentTo: email };
-  },
-  async me(): Promise<User> {
-    return delay(currentUser, 120);
-  },
-};
-
-/* --------------------------------------------------------------- worlds */
 
 export const worldService = {
   async list(): Promise<Project[]> {
