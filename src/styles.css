@@ -697,8 +697,7 @@ body:has(.worlds-sanctuary)::after {
 }
 
 @utility rule-gold {
-  border-top: 1px solid
-    color-mix(in oklch, var(--color-gold) 35%, transparent);
+  border-top: 1px solid color-mix(in oklch, var(--color-gold) 35%, transparent);
 }
 
 @utility text-balance-tight {
@@ -774,13 +773,141 @@ body:has(.worlds-sanctuary)::after {
 
 /* Tiptap manuscript editor */
 
+.manuscript-workspace {
+  background:
+    radial-gradient(
+      ellipse 70% 42% at 50% 0%,
+      color-mix(in oklch, var(--color-mist) 7%, transparent),
+      transparent 72%
+    ),
+    var(--color-background);
+}
+
+.manuscript-page {
+  min-height: calc(100vh - 7rem);
+  transition:
+    max-width 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.manuscript-page .tiptap {
+  caret-color: var(--color-gold);
+}
+
+.manuscript-page[data-manuscript-font="literary"] .tiptap {
+  font-family: var(--font-serif);
+}
+
+.manuscript-page[data-manuscript-font="classic"] .tiptap {
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.manuscript-page[data-manuscript-font="book"] .tiptap {
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+}
+
+.manuscript-page[data-manuscript-font="modern"] .tiptap {
+  font-family: var(--font-sans);
+  letter-spacing: 0;
+}
+
+.manuscript-page[data-manuscript-size="small"] .tiptap {
+  font-size: 1.05rem;
+}
+
+.manuscript-page[data-manuscript-size="medium"] .tiptap {
+  font-size: clamp(1.16rem, 1.05rem + 0.22vw, 1.32rem);
+}
+
+.manuscript-page[data-manuscript-size="large"] .tiptap {
+  font-size: clamp(1.3rem, 1.18rem + 0.24vw, 1.48rem);
+}
+
+.manuscript-page[data-manuscript-spacing="compact"] .tiptap {
+  line-height: 1.55;
+}
+
+.manuscript-page[data-manuscript-spacing="compact"] .tiptap p {
+  margin-bottom: 0.85rem;
+}
+
+.manuscript-page[data-manuscript-spacing="comfortable"] .tiptap {
+  line-height: 1.9;
+}
+
+.manuscript-page[data-manuscript-spacing="comfortable"] .tiptap p {
+  margin-bottom: 1.35rem;
+}
+
+.manuscript-page[data-manuscript-spacing="spacious"] .tiptap {
+  line-height: 2.2;
+}
+
+.manuscript-page[data-manuscript-spacing="spacious"] .tiptap p {
+  margin-bottom: 1.75rem;
+}
+
+.manuscript-page--paged {
+  position: relative;
+  margin-top: 2.5rem;
+  margin-bottom: 4rem;
+  width: min(100% - 2rem, 51rem);
+  min-height: 66rem;
+  border: 1px solid color-mix(in oklch, var(--color-border) 85%, transparent);
+  border-radius: 0.2rem;
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in oklch, var(--color-gold) 2.8%, transparent) 50%,
+      transparent
+    ),
+    color-mix(in oklch, var(--color-surface) 94%, var(--color-background));
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.025) inset,
+    0 24px 70px rgba(0, 0, 0, 0.24);
+  padding: 5.5rem clamp(2rem, 7vw, 6rem) 4.5rem;
+}
+
+.manuscript-page--paged .tiptap {
+  min-height: 45rem;
+}
+
+.manuscript-page__footer {
+  position: absolute;
+  right: clamp(2rem, 7vw, 6rem);
+  bottom: 1.75rem;
+  left: clamp(2rem, 7vw, 6rem);
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid
+    color-mix(in oklch, var(--color-border) 55%, transparent);
+  padding-top: 0.8rem;
+  color: var(--color-muted-foreground);
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 .tiptap {
-  min-height: 58vh;
+  min-height: 62vh;
   outline: none;
+  font-family: var(--font-serif);
+  font-size: clamp(1.16rem, 1.05rem + 0.22vw, 1.32rem);
+  font-weight: 450;
+  line-height: 1.9;
+  letter-spacing: 0.003em;
+  color: color-mix(
+    in oklch,
+    var(--color-foreground) 92%,
+    var(--color-muted-foreground)
+  );
 }
 
 .tiptap p {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.35rem;
+  text-wrap: pretty;
 }
 
 .tiptap p:last-child {
@@ -798,8 +925,7 @@ body:has(.worlds-sanctuary)::after {
 
 .tiptap blockquote {
   margin: 1.75rem 0;
-  border-left: 2px solid
-    color-mix(in oklch, var(--color-gold) 55%, transparent);
+  border-left: 2px solid color-mix(in oklch, var(--color-gold) 55%, transparent);
   padding-left: 1.25rem;
   color: color-mix(
     in oklch,
@@ -846,4 +972,46 @@ body:has(.worlds-sanctuary)::after {
   height: 0;
   color: var(--color-muted-foreground);
   pointer-events: none;
+}
+
+.tiptap ::selection {
+  background: color-mix(in oklch, var(--color-gold) 24%, transparent);
+}
+
+.manuscript-page--typewriter {
+  padding-top: 28vh;
+  padding-bottom: 45vh;
+}
+
+.manuscript-page--typewriter .tiptap {
+  min-height: 70vh;
+}
+
+@media (max-width: 1279px) {
+  .manuscript-page {
+    max-width: 760px;
+  }
+}
+
+@media (max-width: 767px) {
+  .tiptap {
+    font-size: 1.08rem;
+    line-height: 1.82;
+  }
+
+  .manuscript-page--typewriter {
+    padding-top: 20vh;
+  }
+
+  .manuscript-page--paged {
+    margin-top: 1rem;
+    width: calc(100% - 1rem);
+    min-height: calc(100vh - 8rem);
+    padding: 3rem 1.5rem 4rem;
+  }
+
+  .manuscript-page__footer {
+    right: 1.5rem;
+    left: 1.5rem;
+  }
 }

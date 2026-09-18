@@ -33,9 +33,19 @@ export interface ManuscriptData {
 export interface SaveChapterInput {
   chapterId: string;
   title: string;
+  subtitle: string;
   contentJson: JSONContent;
   plainText: string;
   wordCount: number;
+}
+
+export interface ChapterVersion {
+  id: string;
+  chapterId: string;
+  contentJson: JSONContent;
+  plainText: string;
+  wordCount: number;
+  createdAt: string;
 }
 
 interface WorldRow {
@@ -99,26 +109,27 @@ function mapChapter(row: ChapterRow): ManuscriptChapter {
   };
 }
 
-export async function getManuscript(
-  worldId: string,
-): Promise<ManuscriptData> {
+export async function getManuscript(worldId: string): Promise<ManuscriptData> {
   const [worldResult, chaptersResult] = await Promise.all([
     supabase
       .from("worlds")
-      .select(`
+      .select(
+        `
         id,
         title,
         description,
         genre,
         status,
         last_opened_at
-      `)
+      `,
+      )
       .eq("id", worldId)
       .single(),
 
     supabase
       .from("chapters")
-      .select(`
+      .select(
+        `
         id,
         world_id,
         title,
@@ -131,7 +142,8 @@ export async function getManuscript(
         analysis_status,
         created_at,
         updated_at
-      `)
+      `,
+      )
       .eq("world_id", worldId)
       .order("position", { ascending: true }),
   ]);
@@ -157,13 +169,12 @@ export async function getManuscript(
   };
 }
 
-export async function saveChapter(
-  input: SaveChapterInput,
-): Promise<void> {
+export async function saveChapter(input: SaveChapterInput): Promise<void> {
   const { error } = await supabase
     .from("chapters")
     .update({
       title: input.title.trim() || "Untitled Chapter",
+      subtitle: input.subtitle.trim() || null,
       content_json: input.contentJson,
       plain_text: input.plainText,
       word_count: input.wordCount,
@@ -204,7 +215,8 @@ export async function createChapter(
       word_count: 0,
       status: "draft",
     })
-    .select(`
+    .select(
+      `
       id,
       world_id,
       title,
@@ -217,7 +229,8 @@ export async function createChapter(
       analysis_status,
       created_at,
       updated_at
-    `)
+    `,
+    )
     .single();
 
   if (error) {
@@ -227,9 +240,7 @@ export async function createChapter(
   return mapChapter(data as ChapterRow);
 }
 
-export async function deleteChapter(
-  chapterId: string,
-): Promise<void> {
+export async function deleteChapter(chapterId: string): Promise<void> {
   const { error } = await supabase
     .from("chapters")
     .delete()
@@ -238,6 +249,56 @@ export async function deleteChapter(
   if (error) {
     throw new Error(error.message);
   }
+}
+
+export async function duplicateChapter(
+  chapter: ManuscriptChapter,
+): Promise<ManuscriptChapter> {
+  const { data: latestChapter, error: positionError } = await supabase
+    .from("chapters")
+    .select("position")
+    .eq("world_id", chapter.worldId)
+    .order("position", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (positionError) throw new Error(positionError.message);
+
+  const { data, error } = await supabase
+    .from("chapters")
+    .insert({
+      world_id: chapter.worldId,
+      title: `${chapter.title} copy`,
+      subtitle: chapter.subtitle || null,
+      position: (latestChapter?.position ?? 0) + 1,
+      content_json: chapter.contentJson,
+      plain_text: chapter.plainText,
+      word_count: chapter.wordCount,
+      status: "draft",
+    })
+    .select(
+      `
+      id, world_id, title, subtitle, position, content_json, plain_text,
+      word_count, status, analysis_status, created_at, updated_at
+    `,
+    )
+    .single();
+
+  if (error) throw new Error(error.message);
+
+  return mapChapter(data as ChapterRow);
+}
+
+export async function updateChapterStatus(
+  chapterId: string,
+  status: ManuscriptChapter["status"],
+): Promise<void> {
+  const { error } = await supabase
+    .from("chapters")
+    .update({ status, updated_at: new Date().toISOString() })
+    .eq("id", chapterId);
+
+  if (error) throw new Error(error.message);
 }
 
 export async function createChapterVersion(
@@ -267,4 +328,26 @@ export async function createChapterVersion(
   if (error) {
     throw new Error(error.message);
   }
+}
+
+export async function getChapterVersions(
+  chapterId: string,
+): Promise<ChapterVersion[]> {
+  const { data, error } = await supabase
+    .from("chapter_versions")
+    .select("id, chapter_id, content_json, plain_text, word_count, created_at")
+    .eq("chapter_id", chapterId)
+    .order("created_at", { ascending: false })
+    .limit(25);
+
+  if (error) throw new Error(error.message);
+
+  return (data ?? []).map((version) => ({
+    id: version.id,
+    chapterId: version.chapter_id,
+    contentJson: version.content_json ?? emptyDocument,
+    plainText: version.plain_text ?? "",
+    wordCount: version.word_count ?? 0,
+    createdAt: version.created_at,
+  }));
 }
