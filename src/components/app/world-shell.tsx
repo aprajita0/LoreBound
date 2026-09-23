@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
   Bell,
   BookOpen,
@@ -34,9 +35,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/lib/theme";
 import { useSession } from "@/lib/session";
@@ -60,7 +74,11 @@ const navItems = [
 ];
 
 const notifications = [
-  { id: 1, text: "Chapter 24 analysis produced 3 new findings.", when: "2 hours ago" },
+  {
+    id: 1,
+    text: "Chapter 24 analysis produced 3 new findings.",
+    when: "2 hours ago",
+  },
   { id: 2, text: "Mira recorded as an identity of Omir Igwe.", when: "Today" },
   { id: 3, text: "Lynx's true species updated to Griffin.", when: "Yesterday" },
 ];
@@ -70,11 +88,22 @@ function ThemeToggle() {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button variant="ghost" size="icon" onClick={toggle} aria-label="Switch theme">
-          {theme === "dark" ? <Moon className="size-4" /> : <Sun className="size-4" />}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggle}
+          aria-label="Switch theme"
+        >
+          {theme === "dark" ? (
+            <Moon className="size-4" />
+          ) : (
+            <Sun className="size-4" />
+          )}
         </Button>
       </TooltipTrigger>
-      <TooltipContent>{theme === "dark" ? "Dark theme" : "Light theme"}</TooltipContent>
+      <TooltipContent>
+        {theme === "dark" ? "Dark theme" : "Light theme"}
+      </TooltipContent>
     </Tooltip>
   );
 }
@@ -83,13 +112,23 @@ function Notifications() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="ghost" size="icon" aria-label="Notifications" className="relative">
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="Notifications"
+          className="relative"
+        >
           <Bell className="size-4" />
-          <span className="absolute right-2 top-2 size-1.5 rounded-full bg-gold" aria-hidden />
+          <span
+            className="absolute right-2 top-2 size-1.5 rounded-full bg-gold"
+            aria-hidden
+          />
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-80 p-0">
-        <p className="border-b border-border/60 px-4 py-2.5 font-display text-base">Notifications</p>
+        <p className="border-b border-border/60 px-4 py-2.5 font-display text-base">
+          Notifications
+        </p>
         <ul className="divide-y divide-border/50">
           {notifications.map((n) => (
             <li key={n.id} className="px-4 py-3">
@@ -162,7 +201,8 @@ function DemoBadge() {
         </Badge>
       </TooltipTrigger>
       <TooltipContent className="max-w-xs">
-        You can explore every part of this world. Editing and permanent changes require an account.
+        You can explore every part of this world. Editing and permanent changes
+        require an account.
       </TooltipContent>
     </Tooltip>
   );
@@ -187,14 +227,23 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
                 to={href}
                 onClick={onNavigate}
                 className={cn(
-                  "flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-colors",
+                  "world-shell-nav-link relative isolate flex items-center gap-2.5 overflow-hidden rounded-md px-3 py-2 text-sm transition-colors",
                   active
-                    ? "bg-accent text-foreground shadow-[inset_2px_0_0_0_var(--color-gold)]"
+                    ? "text-foreground"
                     : "text-muted-foreground hover:bg-accent/60 hover:text-foreground",
                 )}
               >
-                <Icon className="size-4 shrink-0" aria-hidden />
-                <span className="truncate">{item.label}</span>
+                {active ? (
+                  <motion.span
+                    className="world-shell-nav-link__active"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                    aria-hidden="true"
+                  />
+                ) : null}
+                <Icon className="relative z-10 size-4 shrink-0" aria-hidden />
+                <span className="relative z-10 truncate">{item.label}</span>
               </Link>
             </li>
           );
@@ -212,7 +261,9 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
           >
             <Icon className="size-4" aria-hidden />
             {label}
-            {readOnly ? <Lock className="ml-auto size-3 opacity-60" aria-hidden /> : null}
+            {readOnly ? (
+              <Lock className="ml-auto size-3 opacity-60" aria-hidden />
+            ) : null}
           </button>
         ))}
         {readOnly ? (
@@ -239,8 +290,16 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
-function Shell({ worldTitle, children }: { worldTitle: string; children: ReactNode }) {
+function Shell({
+  worldTitle,
+  children,
+}: {
+  worldTitle: string;
+  children: ReactNode;
+}) {
   const { readOnly } = useWorldMode();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const reduceMotion = useReducedMotion();
   const [collapsed, setCollapsed] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileNav, setMobileNav] = useState(false);
@@ -257,16 +316,23 @@ function Shell({ worldTitle, children }: { worldTitle: string; children: ReactNo
   }, []);
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-40 flex h-14 items-center gap-2 border-b border-border/70 bg-background/90 px-3 backdrop-blur-sm sm:px-4">
+    <div className="world-shell flex min-h-screen flex-col">
+      <header className="world-shell-header sticky top-0 z-40 flex h-14 items-center gap-2 border-b border-border/70 bg-background/90 px-3 backdrop-blur-sm sm:px-4">
         <Sheet open={mobileNav} onOpenChange={setMobileNav}>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open world navigation">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="lg:hidden"
+              aria-label="Open world navigation"
+            >
               <Menu className="size-4" />
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-72 p-0">
-            <SheetTitle className="px-4 pt-4 font-display text-lg">{worldTitle}</SheetTitle>
+            <SheetTitle className="px-4 pt-4 font-display text-lg">
+              {worldTitle}
+            </SheetTitle>
             <NavList onNavigate={() => setMobileNav(false)} />
           </SheetContent>
         </Sheet>
@@ -293,7 +359,9 @@ function Shell({ worldTitle, children }: { worldTitle: string; children: ReactNo
           >
             <Search className="size-3.5" aria-hidden />
             Search This World
-            <kbd className="ml-2 rounded border border-border px-1 font-mono text-[0.6rem]">⌘K</kbd>
+            <kbd className="ml-2 rounded border border-border px-1 font-mono text-[0.6rem]">
+              ⌘K
+            </kbd>
           </Button>
           <Button
             variant="ghost"
@@ -313,24 +381,46 @@ function Shell({ worldTitle, children }: { worldTitle: string; children: ReactNo
       <div className="flex flex-1">
         <aside
           className={cn(
-            "sticky top-14 hidden h-[calc(100vh-3.5rem)] shrink-0 border-r border-border/70 bg-sidebar transition-[width] duration-300 lg:block",
+            "world-shell-sidebar sticky top-14 hidden h-[calc(100vh-3.5rem)] shrink-0 border-r border-border/70 bg-sidebar transition-[width] duration-300 lg:block",
             collapsed ? "w-[3.75rem]" : "w-60",
           )}
-
         >
-          <div className={cn("h-full", collapsed && "[&_span]:hidden [&_kbd]:hidden")}>
+          <div
+            className={cn(
+              "h-full",
+              collapsed && "[&_span]:hidden [&_kbd]:hidden",
+            )}
+          >
             <NavList />
           </div>
           <button
             onClick={() => setCollapsed((v) => !v)}
-            className="absolute -right-3 top-5 flex size-6 items-center justify-center rounded-full border border-border bg-surface text-muted-foreground transition-colors hover:text-foreground"
+            className="world-shell-collapse absolute -right-3 top-5 flex size-6 items-center justify-center rounded-full border border-border bg-surface text-muted-foreground transition-colors hover:text-foreground"
             aria-label={collapsed ? "Expand navigation" : "Collapse navigation"}
           >
-            <ChevronLeft className={cn("size-3 transition-transform", collapsed && "rotate-180")} />
+            <ChevronLeft
+              className={cn(
+                "size-3 transition-transform",
+                collapsed && "rotate-180",
+              )}
+            />
           </button>
         </aside>
 
-        <main className="min-w-0 flex-1">{children}</main>
+        <main className="min-w-0 flex-1 overflow-hidden">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={pathname}
+              className="world-route-stage min-h-full"
+              initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={reduceMotion ? undefined : { opacity: 0, y: -5 }}
+              transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {children}
+            </motion.div>
+          </AnimatePresence>
+        </main>
       </div>
 
       <GlobalSearch open={searchOpen} onOpenChange={setSearchOpen} />

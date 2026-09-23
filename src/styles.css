@@ -75,26 +75,26 @@
   --radius: 0.5rem;
 
   /* Light theme */
-  --background: oklch(0.965 0.009 85);
-  --foreground: oklch(0.24 0.028 265);
-  --surface: oklch(0.985 0.006 85);
-  --surface-raised: oklch(1 0 0);
-  --card: oklch(0.99 0.005 85);
+  --background: oklch(0.935 0.014 82);
+  --foreground: oklch(0.225 0.032 264);
+  --surface: oklch(0.962 0.012 82);
+  --surface-raised: oklch(0.985 0.008 82);
+  --card: oklch(0.975 0.009 82);
   --card-foreground: oklch(0.24 0.028 265);
   --popover: oklch(0.99 0.005 85);
   --popover-foreground: oklch(0.24 0.028 265);
   --primary: oklch(0.34 0.045 265);
   --primary-foreground: oklch(0.97 0.012 85);
-  --secondary: oklch(0.93 0.012 85);
+  --secondary: oklch(0.895 0.018 82);
   --secondary-foreground: oklch(0.3 0.035 265);
-  --muted: oklch(0.93 0.011 85);
-  --muted-foreground: oklch(0.47 0.022 265);
-  --accent: oklch(0.91 0.02 85);
+  --muted: oklch(0.89 0.014 82);
+  --muted-foreground: oklch(0.43 0.026 264);
+  --accent: oklch(0.865 0.025 82);
   --accent-foreground: oklch(0.28 0.035 265);
   --destructive: oklch(0.48 0.13 22);
   --destructive-foreground: oklch(0.97 0.012 85);
-  --border: oklch(0.87 0.014 85);
-  --input: oklch(0.89 0.012 85);
+  --border: oklch(0.79 0.024 82);
+  --input: oklch(0.82 0.02 82);
   --ring: oklch(0.62 0.07 85);
 
   --gold: oklch(0.6 0.078 82);
@@ -113,13 +113,13 @@
   --chart-4: var(--plum);
   --chart-5: var(--wine);
 
-  --sidebar: oklch(0.955 0.01 85);
+  --sidebar: oklch(0.91 0.018 82);
   --sidebar-foreground: oklch(0.26 0.028 265);
   --sidebar-primary: oklch(0.34 0.045 265);
   --sidebar-primary-foreground: oklch(0.97 0.012 85);
-  --sidebar-accent: oklch(0.91 0.02 85);
+  --sidebar-accent: oklch(0.855 0.028 82);
   --sidebar-accent-foreground: oklch(0.28 0.035 265);
-  --sidebar-border: oklch(0.87 0.014 85);
+  --sidebar-border: oklch(0.78 0.024 82);
   --sidebar-ring: oklch(0.62 0.07 85);
 }
 
@@ -641,41 +641,46 @@ body:has(.worlds-sanctuary)::after {
 :root:not(.dark) .worlds-sanctuary__sky {
   background:
     radial-gradient(
-      ellipse 75% 46% at 50% -8%,
-      rgba(163, 197, 222, 0.34),
+      ellipse 68% 52% at 48% -12%,
+      rgba(137, 174, 193, 0.34),
+      transparent 68%
+    ),
+    radial-gradient(
+      ellipse 46% 58% at -4% 42%,
+      rgba(129, 158, 145, 0.2),
       transparent 72%
     ),
     radial-gradient(
-      ellipse 44% 46% at 12% 44%,
-      rgba(229, 195, 130, 0.15),
-      transparent 76%
+      ellipse 48% 54% at 104% 34%,
+      rgba(151, 126, 164, 0.18),
+      transparent 72%
     ),
-    radial-gradient(
-      ellipse 46% 42% at 92% 34%,
-      rgba(201, 185, 220, 0.14),
-      transparent 76%
-    ),
-    linear-gradient(160deg, #f8f4e9 0%, #f4efe5 52%, #eee9e2 100%);
+    linear-gradient(155deg, #dfe7e7 0%, #eee9df 48%, #e8e0e8 100%);
 }
 
 :root:not(.dark) .worlds-sanctuary__aurora {
-  opacity: 0.2;
+  opacity: 0.28;
   mix-blend-mode: multiply;
 }
 
 :root:not(.dark) .worlds-sanctuary__atmosphere {
-  opacity: 0.25;
+  opacity: 0.38;
 }
 
-:root:not(.dark) .worlds-sanctuary__stars,
 :root:not(.dark) .worlds-sanctuary__motes {
   display: none;
+}
+
+:root:not(.dark) .worlds-sanctuary__star {
+  background: #596476;
+  box-shadow: 0 0 7px rgba(71, 91, 111, 0.24);
+  opacity: 0.22 !important;
 }
 
 :root:not(.dark) .worlds-sanctuary__calm-center {
   background: radial-gradient(
     ellipse 64% 58% at 50% 47%,
-    rgba(255, 252, 244, 0.38),
+    rgba(247, 242, 230, 0.18),
     transparent 74%
   );
 }
@@ -683,8 +688,8 @@ body:has(.worlds-sanctuary)::after {
 :root:not(.dark) .worlds-sanctuary__vignette {
   background: radial-gradient(
     ellipse 88% 84% at 50% 42%,
-    transparent 48%,
-    rgba(91, 78, 59, 0.07) 100%
+    transparent 42%,
+    rgba(62, 55, 56, 0.12) 100%
   );
 }
 
@@ -1015,3 +1020,1131 @@ body:has(.worlds-sanctuary)::after {
     left: 1.5rem;
   }
 }
+
+/* -------------------------------------------------------------------------- */
+/* Lorebound living archive                                                   */
+/* -------------------------------------------------------------------------- */
+
+.lorebound-hero {
+  min-height: min(780px, calc(100vh - 3.5rem));
+  isolation: isolate;
+  background:
+    linear-gradient(180deg, rgba(4, 9, 18, 0.08), rgba(4, 9, 18, 0.72)),
+    radial-gradient(
+      ellipse 54% 70% at 86% 24%,
+      rgba(69, 53, 115, 0.2),
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse 48% 68% at 10% 30%,
+      rgba(30, 101, 100, 0.14),
+      transparent 74%
+    );
+}
+
+.lorebound-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(205, 178, 112, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(205, 178, 112, 0.025) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(circle at 68% 40%, black, transparent 78%);
+}
+
+.lorebound-hero__atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.lorebound-hero__glow {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(86px);
+  opacity: 0.32;
+  will-change: transform;
+}
+
+.lorebound-hero__glow--teal {
+  top: 18%;
+  left: -9%;
+  width: 38rem;
+  height: 32rem;
+  background: rgba(42, 145, 138, 0.36);
+  animation: lb-hero-glow-a 18s ease-in-out infinite alternate;
+}
+
+.lorebound-hero__glow--violet {
+  top: -8%;
+  right: -4%;
+  width: 42rem;
+  height: 38rem;
+  background: rgba(100, 72, 160, 0.34);
+  animation: lb-hero-glow-b 23s ease-in-out -7s infinite alternate;
+}
+
+.lorebound-hero__constellation {
+  position: absolute;
+  inset: 0;
+  opacity: 0.58;
+}
+
+.lorebound-hero__constellation span {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--color-parchment);
+  box-shadow: 0 0 10px rgba(227, 208, 159, 0.72);
+  animation: lb-star-breathe 5s ease-in-out infinite;
+}
+
+.lorebound-hero__constellation span:nth-child(1) {
+  top: 15%;
+  left: 11%;
+}
+.lorebound-hero__constellation span:nth-child(2) {
+  top: 30%;
+  left: 32%;
+  animation-delay: -1.4s;
+}
+.lorebound-hero__constellation span:nth-child(3) {
+  top: 11%;
+  right: 34%;
+  animation-delay: -2.8s;
+}
+.lorebound-hero__constellation span:nth-child(4) {
+  top: 25%;
+  right: 8%;
+  animation-delay: -0.8s;
+}
+.lorebound-hero__constellation span:nth-child(5) {
+  bottom: 18%;
+  right: 19%;
+  animation-delay: -3.7s;
+}
+
+.lorebound-hero__sigil {
+  position: absolute;
+  top: 7%;
+  right: 5%;
+  width: clamp(13rem, 23vw, 25rem);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  opacity: 0.18;
+  color: var(--color-gold-soft);
+  transform: rotate(-8deg);
+}
+
+.lorebound-hero__sigil-ring {
+  position: absolute;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+
+.lorebound-hero__sigil-ring::before,
+.lorebound-hero__sigil-ring::after {
+  content: "";
+  position: absolute;
+  inset: 12%;
+  border: 1px dashed currentColor;
+  border-radius: 50%;
+}
+
+.lorebound-hero__sigil-ring::after {
+  inset: 29%;
+  border-style: solid;
+}
+
+.lorebound-hero__sigil-ring--outer {
+  inset: 0;
+  animation: lb-sigil-turn 55s linear infinite;
+}
+
+.lorebound-hero__sigil-ring--inner {
+  inset: 20%;
+  border-style: dashed;
+  animation: lb-sigil-turn 38s linear infinite reverse;
+}
+
+.lorebound-hero__sigil-mark {
+  font-family: var(--font-serif);
+  font-size: clamp(2.2rem, 5vw, 5rem);
+  letter-spacing: 0.18em;
+  text-indent: 0.18em;
+}
+
+.lorebound-hero__title-accent {
+  background: linear-gradient(
+    100deg,
+    var(--color-foreground) 4%,
+    var(--color-gold) 50%,
+    var(--color-foreground) 94%
+  );
+  background-size: 220% auto;
+  background-clip: text;
+  color: transparent;
+  animation: lb-title-shimmer 8s ease-in-out infinite;
+}
+
+.lorebound-hero__primary-action {
+  box-shadow:
+    0 0 0 1px color-mix(in oklch, var(--color-gold) 14%, transparent),
+    0 12px 34px color-mix(in oklch, var(--color-gold) 14%, transparent);
+}
+
+.lorebound-hero__window {
+  position: relative;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.lorebound-hero__window-glow {
+  position: absolute;
+  inset: 7% 5% -4%;
+  z-index: -1;
+  border-radius: 2rem;
+  background: linear-gradient(
+    115deg,
+    rgba(47, 150, 143, 0.2),
+    rgba(113, 78, 161, 0.2)
+  );
+  filter: blur(46px);
+}
+
+@keyframes lb-hero-glow-a {
+  to {
+    transform: translate3d(8%, -5%, 0) scale(1.12);
+  }
+}
+
+@keyframes lb-hero-glow-b {
+  to {
+    transform: translate3d(-7%, 7%, 0) scale(1.08);
+  }
+}
+
+@keyframes lb-sigil-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes lb-title-shimmer {
+  0%,
+  24%,
+  100% {
+    background-position: 100% center;
+  }
+  58%,
+  76% {
+    background-position: 0 center;
+  }
+}
+
+/* World library: dimensional covers and a brief portal transition. */
+
+.world-feature {
+  position: relative;
+  box-shadow:
+    0 34px 90px rgba(0, 0, 0, 0.2),
+    0 1px 0 rgba(255, 255, 255, 0.025) inset;
+}
+
+.world-feature__art-shade {
+  background: linear-gradient(
+    to top,
+    color-mix(in oklch, var(--color-surface) 86%, transparent),
+    transparent 58%
+  );
+}
+
+@media (min-width: 1024px) {
+  .world-feature__art-shade {
+    background: linear-gradient(
+      to right,
+      transparent 48%,
+      color-mix(in oklch, var(--color-surface) 82%, transparent)
+    );
+  }
+}
+
+.world-artwork--fallback {
+  background:
+    radial-gradient(
+      circle at 50% 44%,
+      rgba(202, 164, 91, 0.16),
+      transparent 18%
+    ),
+    radial-gradient(
+      circle at 25% 20%,
+      rgba(67, 141, 135, 0.18),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 80% 32%,
+      rgba(103, 87, 147, 0.22),
+      transparent 38%
+    ),
+    linear-gradient(155deg, #172238 0%, #0a1324 52%, #080d17 100%) !important;
+}
+
+.world-artwork__sigil {
+  width: 8rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+
+.world-artwork__orbit {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(211, 180, 107, 0.24);
+  border-radius: 50%;
+  box-shadow:
+    0 0 45px rgba(192, 151, 72, 0.08),
+    inset 0 0 35px rgba(192, 151, 72, 0.05);
+}
+
+.world-artwork__orbit::before,
+.world-artwork__orbit::after {
+  content: "";
+  position: absolute;
+  border: 1px solid rgba(211, 180, 107, 0.15);
+  border-radius: 50%;
+}
+
+.world-artwork__orbit::before {
+  inset: 16%;
+  border-style: dashed;
+}
+
+.world-artwork__orbit::after {
+  inset: 38%;
+  background: rgba(211, 180, 107, 0.07);
+}
+
+.world-feature::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 35%,
+    rgba(224, 192, 119, 0.055) 49%,
+    transparent 63%
+  );
+  background-size: 240% 100%;
+  opacity: 0;
+  transition: opacity 500ms ease;
+}
+
+.world-feature:hover::after {
+  opacity: 1;
+  animation: lb-card-light 1.5s ease-out;
+}
+
+.world-card {
+  transform-style: preserve-3d;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.16);
+  transition:
+    border-color 350ms ease,
+    box-shadow 350ms ease;
+}
+
+.world-card__shade {
+  background: linear-gradient(
+    to top,
+    rgba(4, 9, 18, 0.97),
+    rgba(4, 9, 18, 0.48) 38%,
+    transparent 68%
+  );
+}
+
+.world-card:hover,
+.world-card:focus-within {
+  border-color: color-mix(in oklch, var(--color-gold) 58%, transparent);
+  box-shadow:
+    0 28px 70px rgba(0, 0, 0, 0.28),
+    0 0 42px rgba(197, 157, 81, 0.07);
+}
+
+.world-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    120deg,
+    transparent 24%,
+    rgba(255, 246, 218, 0.12) 46%,
+    transparent 66%
+  );
+  background-position: 150% 0;
+  background-size: 250% 100%;
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.world-card:hover::after,
+.world-card:focus-within::after {
+  opacity: 0.55;
+  animation: lb-card-light 1.2s ease-out;
+}
+
+.world-card__portal-hint {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 2;
+  border: 1px solid rgba(226, 195, 122, 0.26);
+  border-radius: 999px;
+  background: rgba(4, 9, 17, 0.62);
+  padding: 0.36rem 0.65rem;
+  color: rgba(248, 239, 214, 0.88);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(-5px);
+  backdrop-filter: blur(8px);
+  transition:
+    opacity 250ms ease,
+    transform 250ms ease;
+}
+
+.world-card:hover .world-card__portal-hint,
+.world-card:focus-within .world-card__portal-hint {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes lb-card-light {
+  from {
+    background-position: 170% 0;
+  }
+  to {
+    background-position: -70% 0;
+  }
+}
+
+.world-portal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #030711;
+  perspective: 1100px;
+}
+
+.world-portal__veil {
+  position: absolute;
+  width: min(64vw, 58rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(217, 185, 110, 0.24),
+    rgba(68, 104, 139, 0.17) 30%,
+    rgba(55, 44, 95, 0.2) 52%,
+    transparent 70%
+  );
+  filter: blur(18px);
+}
+
+.world-portal__art {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.world-portal__cover,
+.world-portal__ambient-art {
+  width: 100%;
+  height: 100%;
+}
+
+.world-portal__cover {
+  object-fit: cover;
+}
+
+.world-portal__ambient-art {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at 50% 48%,
+      rgba(205, 169, 91, 0.13),
+      transparent 13%
+    ),
+    radial-gradient(
+      ellipse 38% 44% at 50% 50%,
+      rgba(70, 91, 133, 0.22),
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse 64% 58% at 50% 42%,
+      rgba(74, 49, 106, 0.14),
+      transparent 74%
+    ),
+    linear-gradient(155deg, #0b1728, #060c17 58%, #040811);
+}
+
+.world-portal__ambient-orbit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border: 1px solid rgba(211, 181, 111, 0.14);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.world-portal__ambient-orbit--outer {
+  width: min(58vw, 48rem);
+  aspect-ratio: 1;
+  animation: lb-portal-orbit 46s linear infinite;
+}
+
+.world-portal__ambient-orbit--inner {
+  width: min(34vw, 27rem);
+  aspect-ratio: 1;
+  border-style: dashed;
+  animation: lb-portal-orbit 34s linear infinite reverse;
+}
+
+@keyframes lb-portal-orbit {
+  to {
+    rotate: 360deg;
+  }
+}
+
+.world-portal__ambient-star {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #efe4c7;
+  box-shadow: 0 0 16px rgba(225, 190, 111, 0.7);
+}
+
+.world-portal__ambient-star--one {
+  top: 31%;
+  left: 33%;
+}
+
+.world-portal__ambient-star--two {
+  top: 23%;
+  right: 29%;
+}
+
+.world-portal__ambient-star--three {
+  right: 36%;
+  bottom: 28%;
+}
+
+.world-portal__art-shade {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(5, 9, 17, 0.16),
+      rgba(3, 7, 15, 0.9) 78%
+    ),
+    linear-gradient(180deg, rgba(3, 7, 15, 0.12), rgba(3, 7, 15, 0.72));
+}
+
+.world-portal__copy {
+  position: relative;
+  z-index: 2;
+  width: min(90vw, 48rem);
+  text-align: center;
+  text-shadow: 0 3px 24px rgba(0, 0, 0, 0.9);
+}
+
+.world-portal__copy p {
+  color: #d6b66c;
+  font-size: 0.7rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.world-portal__copy h2 {
+  margin-top: 0.45rem;
+  font-family: var(--font-serif);
+  font-size: clamp(2.4rem, 6vw, 6rem);
+  line-height: 1;
+  color: #f0eadb;
+}
+
+.world-portal__copy span {
+  display: block;
+  margin-top: 1.25rem;
+  color: rgba(240, 234, 219, 0.68);
+  font-size: 0.75rem;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+}
+
+/* App shell: quiet glass, illuminated navigation, soft page changes. */
+
+.world-shell {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(
+      ellipse 70% 42% at 58% -8%,
+      rgba(58, 77, 116, 0.1),
+      transparent 72%
+    ),
+    var(--color-background);
+}
+
+.world-shell-header {
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(18px) saturate(120%);
+}
+
+.world-shell-header::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 -1px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklch, var(--color-gold) 28%, transparent),
+    transparent
+  );
+}
+
+.world-shell-sidebar {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--color-sidebar) 97%, transparent),
+    color-mix(in oklch, var(--color-background) 92%, transparent)
+  );
+  box-shadow: 14px 0 44px rgba(0, 0, 0, 0.04);
+}
+
+.world-shell-nav-link__active {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-left: 2px solid var(--color-gold);
+  border-radius: inherit;
+  background:
+    linear-gradient(
+      90deg,
+      color-mix(in oklch, var(--color-gold) 14%, transparent),
+      transparent 88%
+    ),
+    var(--color-accent);
+  box-shadow: 0 0 28px color-mix(in oklch, var(--color-gold) 6%, transparent);
+}
+
+.world-shell-collapse {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.world-route-stage {
+  transform-origin: 50% 0;
+}
+
+/* Faint constellations give the world library identity without visual noise. */
+
+.worlds-sanctuary__constellations {
+  inset: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  opacity: 0.19;
+}
+
+.worlds-sanctuary__constellation {
+  fill: rgba(236, 224, 196, 0.9);
+  stroke: rgba(164, 195, 210, 0.62);
+  stroke-width: 0.7;
+}
+
+.worlds-sanctuary__constellation path {
+  fill: none;
+  stroke-dasharray: 460;
+  animation: lb-constellation-draw 12s ease-in-out infinite alternate;
+}
+
+.worlds-sanctuary__constellation--two path {
+  animation-delay: -5s;
+}
+
+.worlds-sanctuary__shooting-star {
+  z-index: 4;
+  width: 7rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(245, 237, 211, 0.8));
+  opacity: 0;
+  transform: rotate(-32deg);
+  filter: drop-shadow(0 0 5px rgba(195, 217, 230, 0.6));
+}
+
+.worlds-sanctuary__shooting-star--one {
+  top: 19%;
+  left: 68%;
+  animation: lb-shooting-star 13s ease-in 2s infinite;
+}
+
+.worlds-sanctuary__shooting-star--two {
+  top: 38%;
+  left: 16%;
+  animation: lb-shooting-star 17s ease-in 9s infinite;
+}
+
+@keyframes lb-constellation-draw {
+  from {
+    stroke-dashoffset: 460;
+    opacity: 0.24;
+  }
+  45%,
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0.72;
+  }
+}
+
+@keyframes lb-shooting-star {
+  0%,
+  72%,
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(-32deg);
+  }
+  75% {
+    opacity: 0.85;
+  }
+  84% {
+    opacity: 0;
+    transform: translate3d(-12rem, 8rem, 0) rotate(-32deg);
+  }
+}
+
+:root:not(.dark) .lorebound-hero {
+  background:
+    radial-gradient(
+      ellipse 54% 70% at 86% 24%,
+      rgba(130, 109, 165, 0.13),
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse 48% 68% at 10% 30%,
+      rgba(83, 147, 142, 0.11),
+      transparent 74%
+    );
+}
+
+:root:not(.dark) .world-portal {
+  background: #101521;
+}
+
+/* Light theme: an ivory archive, designed independently from night mode. */
+
+:root:not(.dark) body {
+  color: #252a36;
+}
+
+:root:not(.dark) .world-feature {
+  border-color: rgba(139, 108, 55, 0.3);
+  background: rgba(249, 246, 238, 0.94);
+  box-shadow:
+    0 28px 70px rgba(69, 55, 36, 0.15),
+    0 1px 0 rgba(255, 255, 255, 0.8) inset;
+}
+
+:root:not(.dark) .world-feature__art-shade {
+  background: linear-gradient(
+    to top,
+    rgba(249, 246, 238, 0.96),
+    transparent 48%
+  );
+}
+
+@media (min-width: 1024px) {
+  :root:not(.dark) .world-feature__art-shade {
+    background: linear-gradient(
+      to right,
+      transparent 64%,
+      rgba(249, 246, 238, 0.72) 86%,
+      rgba(249, 246, 238, 0.96)
+    );
+  }
+}
+
+:root:not(.dark) .world-artwork--fallback {
+  background:
+    radial-gradient(
+      circle at 50% 44%,
+      rgba(218, 184, 111, 0.18),
+      transparent 18%
+    ),
+    radial-gradient(
+      circle at 22% 18%,
+      rgba(83, 141, 137, 0.2),
+      transparent 36%
+    ),
+    radial-gradient(
+      circle at 82% 30%,
+      rgba(120, 94, 148, 0.22),
+      transparent 40%
+    ),
+    linear-gradient(155deg, #25354a 0%, #17243a 50%, #11192b 100%) !important;
+}
+
+:root:not(.dark) .world-card {
+  border-color: rgba(123, 97, 55, 0.32);
+  background: #172136;
+  box-shadow:
+    0 22px 55px rgba(58, 47, 32, 0.17),
+    0 1px 0 rgba(255, 255, 255, 0.06) inset;
+}
+
+:root:not(.dark) .world-card:hover,
+:root:not(.dark) .world-card:focus-within {
+  border-color: rgba(145, 107, 45, 0.58);
+  box-shadow:
+    0 32px 75px rgba(53, 42, 29, 0.22),
+    0 0 0 1px rgba(194, 151, 72, 0.08);
+}
+
+:root:not(.dark) .world-card__shade {
+  background: linear-gradient(
+    to top,
+    rgba(9, 15, 28, 0.98),
+    rgba(9, 15, 28, 0.68) 34%,
+    transparent 70%
+  );
+}
+
+:root:not(.dark) .world-card__copy h3 {
+  color: #f4eddd;
+}
+
+:root:not(.dark) .world-card__copy > p:not(:first-child),
+:root:not(.dark) .world-card__copy span {
+  color: rgba(232, 231, 224, 0.72);
+}
+
+:root:not(.dark) .world-card__portal-hint {
+  border-color: rgba(226, 195, 122, 0.36);
+  background: rgba(9, 15, 28, 0.72);
+  color: #f4eddd;
+}
+
+:root:not(.dark) .world-shell {
+  background:
+    radial-gradient(
+      ellipse 72% 46% at 58% -12%,
+      rgba(128, 157, 174, 0.17),
+      transparent 70%
+    ),
+    linear-gradient(145deg, #eeeae1 0%, #f4f0e7 54%, #ece6df 100%);
+}
+
+:root:not(.dark) .world-shell-header {
+  background: rgba(248, 245, 237, 0.92);
+  box-shadow: 0 10px 35px rgba(76, 61, 39, 0.09);
+}
+
+:root:not(.dark) .world-shell-sidebar {
+  background: linear-gradient(180deg, #e9e3d7, #f0ebe1 78%);
+  box-shadow: 12px 0 34px rgba(75, 60, 39, 0.07);
+}
+
+:root:not(.dark) .world-shell-nav-link__active {
+  background:
+    linear-gradient(90deg, rgba(173, 132, 58, 0.17), transparent 92%),
+    rgba(221, 211, 192, 0.88);
+  box-shadow: 0 0 24px rgba(158, 119, 50, 0.07);
+}
+
+:root:not(.dark) .manuscript-workspace {
+  background:
+    radial-gradient(
+      ellipse 70% 38% at 50% 0%,
+      rgba(131, 157, 172, 0.13),
+      transparent 70%
+    ),
+    linear-gradient(150deg, #e9e5dc, #f1ede4 54%, #e8e2da);
+}
+
+:root:not(.dark)
+  .manuscript-page:not(.manuscript-page--paged):not(
+    .manuscript-page--typewriter
+  ) {
+  width: min(calc(100% - 3rem), 58rem);
+  min-height: calc(100vh - 10rem);
+  margin: 2rem auto 4rem;
+  border: 1px solid rgba(132, 108, 69, 0.2);
+  border-radius: 0.25rem;
+  background: #faf7ef;
+  box-shadow:
+    0 28px 70px rgba(75, 60, 38, 0.13),
+    0 1px 0 rgba(255, 255, 255, 0.9) inset;
+  padding: 4.75rem clamp(2.5rem, 7vw, 6.5rem) 5rem;
+}
+
+:root:not(.dark) .manuscript-page--paged {
+  border-color: rgba(132, 108, 69, 0.22);
+  background: #faf7ef;
+  box-shadow: 0 28px 70px rgba(75, 60, 38, 0.14);
+}
+
+:root:not(.dark) .manuscript-page .tiptap {
+  color: #2e3038;
+}
+
+:root:not(.dark) .manuscript-page input::placeholder,
+:root:not(.dark)
+  .manuscript-page
+  .tiptap
+  p.is-editor-empty:first-child::before {
+  color: rgba(77, 76, 78, 0.48);
+}
+
+@media (max-width: 767px) {
+  :root:not(.dark)
+    .manuscript-page:not(.manuscript-page--paged):not(
+      .manuscript-page--typewriter
+    ) {
+    width: calc(100% - 1rem);
+    margin-top: 0.5rem;
+    padding: 3rem 1.5rem 4rem;
+  }
+}
+
+/* Light mode direction: sunlit archive, not a bleached night theme. */
+
+:root:not(.dark) .worlds-sanctuary__sky {
+  background:
+    radial-gradient(
+      circle at 14% 12%,
+      rgba(184, 149, 82, 0.13),
+      transparent 24%
+    ),
+    radial-gradient(
+      circle at 88% 16%,
+      rgba(83, 104, 130, 0.1),
+      transparent 28%
+    ),
+    linear-gradient(135deg, #ddd3c1 0%, #eee7d9 44%, #e4dac9 100%);
+}
+
+:root:not(.dark) .worlds-sanctuary__aurora,
+:root:not(.dark) .worlds-sanctuary__atmosphere,
+:root:not(.dark) .worlds-sanctuary__stars,
+:root:not(.dark) .worlds-sanctuary__motes,
+:root:not(.dark) .worlds-sanctuary__shooting-star {
+  display: none;
+}
+
+:root:not(.dark) .worlds-sanctuary__calm-center {
+  background: radial-gradient(
+    ellipse 60% 52% at 50% 34%,
+    rgba(255, 251, 239, 0.28),
+    transparent 72%
+  );
+}
+
+:root:not(.dark) .worlds-sanctuary__vignette {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(62, 48, 32, 0.08),
+      transparent 18%,
+      transparent 82%,
+      rgba(62, 48, 32, 0.08)
+    ),
+    linear-gradient(180deg, transparent 70%, rgba(62, 48, 32, 0.08));
+}
+
+:root:not(.dark) .worlds-sanctuary__constellations {
+  opacity: 0.1;
+  filter: sepia(0.55);
+}
+
+.worlds-library__header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+:root:not(.dark) .worlds-library__header > header {
+  border-color: rgba(211, 177, 104, 0.22) !important;
+  background: rgba(15, 24, 41, 0.97) !important;
+  color: #f4eddf;
+  box-shadow: 0 12px 34px rgba(32, 26, 20, 0.16);
+  backdrop-filter: blur(18px);
+}
+
+:root:not(.dark) .worlds-library__header :is(a, button) {
+  color: rgba(244, 237, 223, 0.78);
+}
+
+:root:not(.dark) .worlds-library__header :is(a, button):hover {
+  color: #fffaf0;
+}
+
+:root:not(.dark) .worlds-library__header kbd {
+  border-color: rgba(235, 220, 186, 0.22);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(244, 237, 223, 0.7);
+}
+
+:root:not(.dark) .worlds-library__content::before {
+  content: "";
+  position: absolute;
+  top: 2rem;
+  right: 3rem;
+  z-index: -1;
+  width: min(30vw, 25rem);
+  aspect-ratio: 1;
+  border: 1px solid rgba(144, 108, 49, 0.1);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 2.75rem rgba(144, 108, 49, 0.025),
+    0 0 0 5.5rem rgba(144, 108, 49, 0.018);
+}
+
+:root:not(.dark) .world-feature {
+  overflow: hidden;
+  border-color: rgba(115, 84, 38, 0.36);
+  background: #f8f3e8;
+  box-shadow:
+    0 30px 70px rgba(64, 48, 29, 0.18),
+    0 1px 0 rgba(255, 255, 255, 0.86) inset;
+}
+
+:root:not(.dark) .world-feature__art-shade {
+  display: none;
+}
+
+:root:not(.dark) .world-feature__copy {
+  position: relative;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.34), transparent 54%), #f8f3e8;
+}
+
+:root:not(.dark) .world-feature__copy::before {
+  content: "";
+  position: absolute;
+  inset: 1.15rem;
+  pointer-events: none;
+  border: 1px solid rgba(140, 104, 44, 0.08);
+  border-radius: 0.3rem;
+}
+
+:root:not(.dark) .world-feature__copy > * {
+  position: relative;
+}
+
+:root:not(.dark) .world-card {
+  border-color: rgba(105, 78, 37, 0.42);
+  box-shadow: 0 24px 55px rgba(59, 44, 27, 0.2);
+}
+
+:root:not(.dark) .worlds-library__panels > * {
+  border-color: rgba(119, 91, 48, 0.24);
+  background: rgba(249, 245, 235, 0.9);
+  box-shadow:
+    0 16px 40px rgba(63, 49, 31, 0.1),
+    0 1px 0 rgba(255, 255, 255, 0.75) inset;
+}
+
+:root:not(.dark) .world-shell-header {
+  border-color: rgba(211, 177, 104, 0.2);
+  background: rgba(15, 24, 41, 0.97);
+  color: #f4eddf;
+}
+
+:root:not(.dark) .world-shell-header :is(a, button) {
+  color: rgba(244, 237, 223, 0.78);
+}
+
+:root:not(.dark) .world-shell-header :is(a, button):hover {
+  color: #fffaf0;
+}
+
+:root:not(.dark) .world-shell-header kbd {
+  border-color: rgba(235, 220, 186, 0.22);
+  color: rgba(244, 237, 223, 0.7);
+}
+
+:root:not(.dark) .world-shell-sidebar {
+  border-color: rgba(117, 89, 47, 0.22);
+  background: linear-gradient(180deg, #ded4c2, #e9e1d3 72%, #e3d9c7);
+}
+
+:root:not(.dark) .manuscript-workspace {
+  background:
+    radial-gradient(
+      circle at 50% -10%,
+      rgba(177, 145, 84, 0.11),
+      transparent 30%
+    ),
+    linear-gradient(135deg, #dcd2c1, #ebe4d7 48%, #ddd3c4);
+}
+
+:root:not(.dark)
+  .manuscript-page:not(.manuscript-page--paged):not(
+    .manuscript-page--typewriter
+  ) {
+  border-color: rgba(113, 83, 39, 0.26);
+  background: #fbf6ea;
+  box-shadow:
+    0 32px 80px rgba(58, 43, 26, 0.18),
+    0 1px 0 rgba(255, 255, 255, 0.95) inset;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lorebound-hero__glow,
+  .lorebound-hero__constellation span,
+  .lorebound-hero__sigil-ring,
+  .lorebound-hero__title-accent,
+  .world-feature:hover::after,
+  .world-card:hover::after,
+  .worlds-sanctuary__constellation path,
+  .worlds-sanctuary__shooting-star {
+    animation: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .lorebound-hero {
+    min-height: auto;
+  }
+
+  .lorebound-hero__sigil {
+    top: 2%;
+    right: -18%;
+    width: 19rem;
+  }
+
+  .world-card__portal-hint {
+    opacity: 1;
+    transform: none;
+  }
+
+  .worlds-sanctuary__constellations {
+    opacity: 0.12;
+  }
+}
+ 

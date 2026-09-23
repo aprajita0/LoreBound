@@ -51,13 +51,7 @@ export function WorldsSanctuaryBackground() {
         focusable="false"
       >
         <defs>
-          <linearGradient
-            id="aurora-far-gradient"
-            x1="0"
-            y1="0"
-            x2="1"
-            y2="0"
-          >
+          <linearGradient id="aurora-far-gradient" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stopColor="#38b6a5" stopOpacity="0" />
             <stop offset="24%" stopColor="#38b6a5" stopOpacity="0.65" />
             <stop offset="60%" stopColor="#6574d9" stopOpacity="0.48" />
@@ -77,13 +71,7 @@ export function WorldsSanctuaryBackground() {
             <stop offset="100%" stopColor="#bc76b4" stopOpacity="0" />
           </linearGradient>
 
-          <linearGradient
-            id="aurora-near-gradient"
-            x1="0"
-            y1="0"
-            x2="1"
-            y2="0"
-          >
+          <linearGradient id="aurora-near-gradient" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stopColor="#deb978" stopOpacity="0" />
             <stop offset="30%" stopColor="#76c9b5" stopOpacity="0.42" />
             <stop offset="72%" stopColor="#8a77d4" stopOpacity="0.38" />
@@ -115,10 +103,7 @@ export function WorldsSanctuaryBackground() {
               result="distortedAurora"
             />
 
-            <feGaussianBlur
-              in="distortedAurora"
-              stdDeviation="38"
-            />
+            <feGaussianBlur in="distortedAurora" stdDeviation="38" />
           </filter>
         </defs>
 
@@ -168,6 +153,32 @@ export function WorldsSanctuaryBackground() {
           );
         })}
       </div>
+
+      <svg
+        className="worlds-sanctuary__constellations"
+        viewBox="0 0 1440 900"
+        preserveAspectRatio="none"
+        focusable="false"
+      >
+        <g className="worlds-sanctuary__constellation worlds-sanctuary__constellation--one">
+          <path d="M111 163 176 121l72 48 65-81 79 54" />
+          <circle cx="111" cy="163" r="2" />
+          <circle cx="176" cy="121" r="2" />
+          <circle cx="248" cy="169" r="2" />
+          <circle cx="313" cy="88" r="2" />
+          <circle cx="392" cy="142" r="2" />
+        </g>
+        <g className="worlds-sanctuary__constellation worlds-sanctuary__constellation--two">
+          <path d="M1110 234 1179 174l64 33 76-72" />
+          <circle cx="1110" cy="234" r="2" />
+          <circle cx="1179" cy="174" r="2" />
+          <circle cx="1243" cy="207" r="2" />
+          <circle cx="1319" cy="135" r="2" />
+        </g>
+      </svg>
+
+      <span className="worlds-sanctuary__shooting-star worlds-sanctuary__shooting-star--one" />
+      <span className="worlds-sanctuary__shooting-star worlds-sanctuary__shooting-star--two" />
 
       <div className="worlds-sanctuary__motes">
         {motes.map(([left, top], index) => (
