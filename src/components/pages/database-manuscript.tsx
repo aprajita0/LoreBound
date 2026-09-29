@@ -5,6 +5,7 @@ import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import Typography from "@tiptap/extension-typography";
 import {
+  ArrowLeft,
   Bold,
   Check,
   Copy,
@@ -21,6 +22,7 @@ import {
   Plus,
   Quote,
   Redo2,
+  Rows3,
   Save,
   ScrollText,
   SlidersHorizontal,
@@ -51,6 +53,7 @@ type ManuscriptFont = "literary" | "classic" | "book" | "modern";
 type ManuscriptSize = "small" | "medium" | "large";
 type ManuscriptSpacing = "compact" | "comfortable" | "spacious";
 type ManuscriptView = "continuous" | "pages";
+type ManuscriptScreen = "index" | "editor";
 
 interface ManuscriptPreferences {
   font: ManuscriptFont;
@@ -70,6 +73,211 @@ const PREFERENCES_KEY = "lorebound.manuscript-preferences";
 
 interface DatabaseManuscriptPageProps {
   worldId: string;
+}
+
+function formatChapterDate(value: string): string {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) return "Recently";
+
+  return new Intl.DateTimeFormat(undefined, {
+    month: "short",
+    day: "numeric",
+    year:
+      date.getFullYear() === new Date().getFullYear() ? undefined : "numeric",
+  }).format(date);
+}
+
+function statusClasses(status: ManuscriptChapter["status"]): string {
+  if (status === "final") {
+    return "border-gold/25 bg-gold/10 text-gold";
+  }
+
+  if (status === "reviewed") {
+    return "border-forest/25 bg-forest/10 text-forest";
+  }
+
+  return "border-border bg-muted/55 text-muted-foreground";
+}
+
+function analysisClasses(status: string): string {
+  const normalized = status.toLowerCase();
+
+  if (normalized === "complete" || normalized === "completed") {
+    return "text-forest";
+  }
+
+  if (normalized === "failed" || normalized === "needs_attention") {
+    return "text-destructive";
+  }
+
+  return "text-muted-foreground";
+}
+
+function ChapterIndex({
+  worldTitle,
+  chapters,
+  creatingChapter,
+  onAddChapter,
+  onOpenChapter,
+}: {
+  worldTitle: string;
+  chapters: ManuscriptChapter[];
+  creatingChapter: boolean;
+  onAddChapter: () => void;
+  onOpenChapter: (chapter: ManuscriptChapter) => void;
+}) {
+  const totalWords = chapters.reduce(
+    (total, chapter) => total + chapter.wordCount,
+    0,
+  );
+
+  return (
+    <div className="min-h-[calc(100vh-3.5rem)] bg-background/35 px-4 py-8 sm:px-7 lg:px-10 lg:py-12">
+      <div className="mx-auto max-w-6xl">
+        <header className="flex flex-col gap-6 border-b border-border/60 pb-7 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-gold">
+              {worldTitle} · Manuscript
+            </p>
+            <h1 className="mt-2 font-display text-4xl leading-none text-foreground sm:text-5xl">
+              Chapters
+            </h1>
+            <p className="mt-3 text-sm leading-6 text-muted-foreground sm:text-base">
+              Choose a chapter to continue writing, or begin a new part of the
+              story.
+            </p>
+          </div>
+
+          <Button
+            onClick={onAddChapter}
+            disabled={creatingChapter}
+            className="w-fit gap-2"
+          >
+            {creatingChapter ? (
+              <Loader2 className="size-4 animate-spin" aria-hidden />
+            ) : (
+              <Plus className="size-4" aria-hidden />
+            )}
+            Add chapter
+          </Button>
+        </header>
+
+        <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
+          <span>
+            {chapters.length} {chapters.length === 1 ? "chapter" : "chapters"}
+          </span>
+          <span className="size-1 rounded-full bg-border" aria-hidden />
+          <span>{totalWords.toLocaleString()} total words</span>
+        </div>
+
+        {chapters.length === 0 ? (
+          <section className="mt-8 rounded-2xl border border-border/70 bg-surface/80 px-6 py-20 text-center shadow-sm backdrop-blur-sm">
+            <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-gold/10 text-gold">
+              <Rows3 className="size-5" aria-hidden />
+            </div>
+            <h2 className="mt-5 font-display text-3xl text-foreground">
+              Your manuscript is ready.
+            </h2>
+            <p className="mx-auto mt-2 max-w-md leading-6 text-muted-foreground">
+              Create Chapter One and give this world its opening line.
+            </p>
+            <Button
+              className="mt-6 gap-2"
+              onClick={onAddChapter}
+              disabled={creatingChapter}
+            >
+              {creatingChapter ? (
+                <Loader2 className="size-4 animate-spin" aria-hidden />
+              ) : (
+                <Plus className="size-4" aria-hidden />
+              )}
+              Create Chapter One
+            </Button>
+          </section>
+        ) : (
+          <div className="mt-6 overflow-hidden rounded-xl border border-border/70 bg-surface/75 shadow-[0_18px_55px_rgba(3,7,18,0.1)] backdrop-blur-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[760px] border-collapse text-left">
+                <thead>
+                  <tr className="border-b border-border/70 bg-background/45 text-[0.62rem] font-semibold uppercase tracking-[0.17em] text-muted-foreground">
+                    <th className="w-20 px-5 py-4">No.</th>
+                    <th className="px-5 py-4">Chapter</th>
+                    <th className="w-32 px-5 py-4">Words</th>
+                    <th className="w-36 px-5 py-4">Last edited</th>
+                    <th className="w-36 px-5 py-4">Analysis</th>
+                    <th className="w-32 px-5 py-4">Status</th>
+                    <th className="w-14 px-3 py-4">
+                      <span className="sr-only">Open</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/60">
+                  {chapters.map((chapter) => (
+                    <tr
+                      key={chapter.id}
+                      className="group cursor-pointer transition-colors hover:bg-accent/45 focus-within:bg-accent/45"
+                      onClick={() => onOpenChapter(chapter)}
+                    >
+                      <td className="px-5 py-4 font-display text-sm text-muted-foreground">
+                        {chapter.position.toString().padStart(2, "0")}
+                      </td>
+                      <td className="px-5 py-4">
+                        <button
+                          type="button"
+                          className="block w-full text-left outline-none"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            onOpenChapter(chapter);
+                          }}
+                        >
+                          <span className="block font-display text-lg leading-6 text-foreground transition-colors group-hover:text-gold">
+                            {chapter.title}
+                          </span>
+                          {chapter.subtitle ? (
+                            <span className="mt-0.5 block max-w-xl truncate text-xs text-muted-foreground">
+                              {chapter.subtitle}
+                            </span>
+                          ) : null}
+                        </button>
+                      </td>
+                      <td className="px-5 py-4 text-sm text-foreground/85">
+                        {chapter.wordCount.toLocaleString()}
+                      </td>
+                      <td className="px-5 py-4 text-sm text-muted-foreground">
+                        {formatChapterDate(chapter.updatedAt)}
+                      </td>
+                      <td
+                        className={cn(
+                          "px-5 py-4 text-xs capitalize",
+                          analysisClasses(chapter.analysisStatus),
+                        )}
+                      >
+                        {chapter.analysisStatus.replaceAll("_", " ")}
+                      </td>
+                      <td className="px-5 py-4">
+                        <span
+                          className={cn(
+                            "inline-flex rounded-md border px-2.5 py-1 text-[0.68rem] font-medium capitalize",
+                            statusClasses(chapter.status),
+                          )}
+                        >
+                          {chapter.status}
+                        </span>
+                      </td>
+                      <td className="px-3 py-4 text-right text-muted-foreground transition-colors group-hover:text-gold">
+                        <ArrowLeft className="size-4 rotate-180" aria-hidden />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
 
 function countWords(text: string): number {
@@ -95,6 +303,7 @@ export function DatabaseManuscriptPage({
   const [selectedChapterId, setSelectedChapterId] = useState<string | null>(
     null,
   );
+  const [screen, setScreen] = useState<ManuscriptScreen>("index");
   const [chapterTitle, setChapterTitle] = useState("");
   const [chapterSubtitle, setChapterSubtitle] = useState("");
   const [saveState, setSaveState] = useState<SaveState>("saved");
@@ -457,6 +666,19 @@ export function DatabaseManuscriptPage({
     setSelectedChapterId(chapter.id);
   }
 
+  async function openChapter(chapter: ManuscriptChapter) {
+    await selectChapter(chapter);
+    setScreen("editor");
+  }
+
+  async function returnToChapterIndex() {
+    await saveImmediately();
+    setChapterMenuOpen(false);
+    setPreferencesOpen(false);
+    setFocusMode(false);
+    setScreen("index");
+  }
+
   function changeChapterTitle(value: string) {
     setChapterTitle(value);
     chapterTitleRef.current = value;
@@ -524,6 +746,7 @@ export function DatabaseManuscriptPage({
       );
 
       setSelectedChapterId(chapter.id);
+      setScreen("editor");
       toast.success("A new chapter has been added.");
     } catch (error) {
       console.error("Unable to add chapter:", error);
@@ -683,6 +906,18 @@ export function DatabaseManuscriptPage({
     );
   }
 
+  if (screen === "index" && manuscriptQuery.data) {
+    return (
+      <ChapterIndex
+        worldTitle={manuscriptQuery.data.world.title}
+        chapters={chapters}
+        creatingChapter={creatingChapter}
+        onAddChapter={() => void addChapter()}
+        onOpenChapter={(chapter) => void openChapter(chapter)}
+      />
+    );
+  }
+
   if (!selectedChapter) {
     return (
       <div className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center p-6">
@@ -710,6 +945,21 @@ export function DatabaseManuscriptPage({
 
   const toolbar = (
     <div className="sticky top-14 z-30 flex flex-wrap items-center gap-1 border-b border-border/60 bg-background/90 px-3 py-2 backdrop-blur-sm">
+      {!focusMode ? (
+        <>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-2"
+            onClick={() => void returnToChapterIndex()}
+          >
+            <ArrowLeft className="size-4" aria-hidden />
+            Chapters
+          </Button>
+          <div className="mx-1 h-5 w-px bg-border" />
+        </>
+      ) : null}
+
       {!focusMode && !leftOpen ? (
         <Button
           variant="ghost"
