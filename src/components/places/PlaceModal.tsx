@@ -1,16 +1,25 @@
 import {
   useEffect,
   useMemo,
+  useRef,
   useState,
+  type ChangeEvent,
+  type DragEvent,
   type FormEvent,
   type ReactNode,
 } from "react";
-import { ImageIcon, Loader2, MapPin, X } from "lucide-react";
+import {
+  ImageIcon,
+  Loader2,
+  Upload,
+  X,
+} from "lucide-react";
 import {
   createPlace,
   getPlaceStatusLabel,
   getPlaceTypeLabel,
   updatePlace,
+  uploadPlaceImage,
   type Place,
   type PlaceStatus,
   type PlaceType,
@@ -58,16 +67,27 @@ export function PlaceModal({
   onClose,
   onSaved,
 }: PlaceModalProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [name, setName] = useState("");
-  const [placeType, setPlaceType] = useState<PlaceType>("city");
-  const [status, setStatus] = useState<PlaceStatus>("active");
-  const [parentPlaceId, setParentPlaceId] = useState("");
+  const [placeType, setPlaceType] =
+    useState<PlaceType>("city");
+  const [status, setStatus] =
+    useState<PlaceStatus>("active");
+  const [parentPlaceId, setParentPlaceId] =
+    useState("");
   const [summary, setSummary] = useState("");
-  const [description, setDescription] = useState("");
+  const [description, setDescription] =
+    useState("");
   const [aliases, setAliases] = useState("");
-  const [imagePath, setImagePath] = useState("");
-  const [mapX, setMapX] = useState("");
-  const [mapY, setMapY] = useState("");
+
+  const [imageFile, setImageFile] =
+    useState<File | null>(null);
+  const [imagePreview, setImagePreview] =
+    useState("");
+  const [removeExistingImage, setRemoveExistingImage] =
+    useState(false);
+  const [dragging, setDragging] = useState(false);
 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -84,20 +104,96 @@ export function PlaceModal({
     setSummary(place?.summary ?? "");
     setDescription(place?.description ?? "");
     setAliases(place?.aliases.join(", ") ?? "");
-    setImagePath(place?.imagePath ?? "");
-    setMapX(place?.mapX?.toString() ?? "");
-    setMapY(place?.mapY?.toString() ?? "");
+
+    setImageFile(null);
+    setImagePreview(place?.imagePath ?? "");
+    setRemoveExistingImage(false);
+    setDragging(false);
     setError("");
   }, [open, place]);
 
+  useEffect(() => {
+    return () => {
+      if (imagePreview.startsWith("blob:")) {
+        URL.revokeObjectURL(imagePreview);
+      }
+    };
+  }, [imagePreview]);
+
   const parentOptions = useMemo(
-    () => places.filter((candidate) => candidate.id !== place?.id),
+    () =>
+      places.filter(
+        (candidate) => candidate.id !== place?.id,
+      ),
     [places, place?.id],
   );
 
   if (!open) return null;
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  function chooseImage(file: File) {
+    const allowedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      setError("Choose a JPEG, PNG, or WebP image.");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setError("The image must be smaller than 5 MB.");
+      return;
+    }
+
+    setError("");
+
+    if (imagePreview.startsWith("blob:")) {
+      URL.revokeObjectURL(imagePreview);
+    }
+
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+    setRemoveExistingImage(false);
+  }
+
+  function handleFileChange(
+    event: ChangeEvent<HTMLInputElement>,
+  ) {
+    const file = event.target.files?.[0];
+
+    if (file) {
+      chooseImage(file);
+    }
+
+    event.target.value = "";
+  }
+
+  function handleDrop(event: DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    setDragging(false);
+
+    const file = event.dataTransfer.files?.[0];
+
+    if (file) {
+      chooseImage(file);
+    }
+  }
+
+  function removeImage() {
+    if (imagePreview.startsWith("blob:")) {
+      URL.revokeObjectURL(imagePreview);
+    }
+
+    setImageFile(null);
+    setImagePreview("");
+    setRemoveExistingImage(true);
+  }
+
+  async function handleSubmit(
+    event: FormEvent<HTMLFormElement>,
+  ) {
     event.preventDefault();
 
     if (!name.trim()) {
@@ -108,24 +204,39 @@ export function PlaceModal({
     setSaving(true);
     setError("");
 
-    const input: SavePlaceInput = {
-      worldId,
-      name,
-      placeType,
-      status,
-      parentPlaceId: parentPlaceId || null,
-      summary,
-      description,
-      aliases: aliases
-        .split(",")
-        .map((alias) => alias.trim())
-        .filter(Boolean),
-      imagePath: imagePath.trim() || null,
-      mapX: mapX.trim() ? Number(mapX) : null,
-      mapY: mapY.trim() ? Number(mapY) : null,
-    };
-
     try {
+      let finalImagePath: string | null =
+        removeExistingImage
+          ? null
+          : place?.imagePath ?? null;
+
+      if (imageFile) {
+        finalImagePath = await uploadPlaceImage(
+          worldId,
+          imageFile,
+        );
+      }
+
+      const input: SavePlaceInput = {
+        worldId,
+        name,
+        placeType,
+        status,
+        parentPlaceId: parentPlaceId || null,
+        summary,
+        description,
+
+        aliases: aliases
+          .split(",")
+          .map((alias) => alias.trim())
+          .filter(Boolean),
+
+        imagePath: finalImagePath,
+
+        mapX: place?.mapX ?? null,
+        mapY: place?.mapY ?? null,
+      };
+
       const savedPlace = place
         ? await updatePlace(place.id, input)
         : await createPlace(input);
@@ -160,7 +271,9 @@ export function PlaceModal({
             </p>
 
             <h2 className="mt-2 font-serif text-3xl text-foreground">
-              {isEditing ? "Edit this place" : "Add a new place"}
+              {isEditing
+                ? "Edit this place"
+                : "Add a new place"}
             </h2>
 
             <p className="mt-1 text-sm text-muted-foreground">
@@ -178,7 +291,10 @@ export function PlaceModal({
           </button>
         </header>
 
-        <form onSubmit={handleSubmit} className="space-y-7 p-7">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-7 p-7"
+        >
           {error && (
             <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
               {error}
@@ -189,7 +305,9 @@ export function PlaceModal({
             <Field label="Place name">
               <input
                 value={name}
-                onChange={(event) => setName(event.target.value)}
+                onChange={(event) =>
+                  setName(event.target.value)
+                }
                 placeholder="The Low Lantern"
                 className={inputClassName}
                 autoFocus
@@ -204,10 +322,15 @@ export function PlaceModal({
                 }
                 className={inputClassName}
               >
-                <option value="">No parent location</option>
+                <option value="">
+                  No parent location
+                </option>
 
                 {parentOptions.map((parent) => (
-                  <option key={parent.id} value={parent.id}>
+                  <option
+                    key={parent.id}
+                    value={parent.id}
+                  >
                     {parent.name}
                   </option>
                 ))}
@@ -218,7 +341,9 @@ export function PlaceModal({
               <select
                 value={placeType}
                 onChange={(event) =>
-                  setPlaceType(event.target.value as PlaceType)
+                  setPlaceType(
+                    event.target.value as PlaceType,
+                  )
                 }
                 className={inputClassName}
               >
@@ -234,12 +359,17 @@ export function PlaceModal({
               <select
                 value={status}
                 onChange={(event) =>
-                  setStatus(event.target.value as PlaceStatus)
+                  setStatus(
+                    event.target.value as PlaceStatus,
+                  )
                 }
                 className={inputClassName}
               >
                 {PLACE_STATUSES.map((placeStatus) => (
-                  <option key={placeStatus} value={placeStatus}>
+                  <option
+                    key={placeStatus}
+                    value={placeStatus}
+                  >
                     {getPlaceStatusLabel(placeStatus)}
                   </option>
                 ))}
@@ -250,7 +380,9 @@ export function PlaceModal({
           <Field label="Short summary">
             <input
               value={summary}
-              onChange={(event) => setSummary(event.target.value)}
+              onChange={(event) =>
+                setSummary(event.target.value)
+              }
               placeholder="A candlelit tavern where secrets travel faster than ale."
               className={inputClassName}
               maxLength={220}
@@ -275,7 +407,9 @@ export function PlaceModal({
           <Field label="Aliases">
             <input
               value={aliases}
-              onChange={(event) => setAliases(event.target.value)}
+              onChange={(event) =>
+                setAliases(event.target.value)
+              }
               placeholder="Old Quarter, Lantern District"
               className={inputClassName}
             />
@@ -285,67 +419,110 @@ export function PlaceModal({
             </p>
           </Field>
 
-          <Field label="Image URL">
-            <div className="flex gap-3">
-              <div className="relative flex-1">
-                <ImageIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Field label="Place image">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={handleFileChange}
+              className="hidden"
+            />
 
-                <input
-                  value={imagePath}
-                  onChange={(event) =>
-                    setImagePath(event.target.value)
-                  }
-                  placeholder="https://..."
-                  className={`${inputClassName} pl-10`}
-                />
-              </div>
-
-              {imagePath && (
+            {imagePreview ? (
+              <div className="relative overflow-hidden rounded-xl border border-border bg-muted">
                 <img
-                  key={imagePath}
-                  src={imagePath}
-                  alt="Place preview"
-                  className="size-11 rounded-lg border border-border object-cover"
+                  src={imagePreview}
+                  alt="Selected place"
+                  className="h-64 w-full object-cover"
                 />
-              )}
-            </div>
+
+                <div className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-gradient-to-t from-black/90 via-black/50 to-transparent px-4 pb-4 pt-12">
+                  <p className="text-xs text-white/80">
+                    {imageFile
+                      ? imageFile.name
+                      : "Current place image"}
+                  </p>
+
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        fileInputRef.current?.click()
+                      }
+                      className="rounded-lg border border-white/20 bg-black/40 px-3 py-1.5 text-xs text-white backdrop-blur transition hover:bg-black/60"
+                    >
+                      Replace
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={removeImage}
+                      className="rounded-lg border border-red-400/30 bg-black/40 px-3 py-1.5 text-xs text-red-200 backdrop-blur transition hover:bg-red-500/20"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() =>
+                  fileInputRef.current?.click()
+                }
+                onKeyDown={(event) => {
+                  if (
+                    event.key === "Enter" ||
+                    event.key === " "
+                  ) {
+                    fileInputRef.current?.click();
+                  }
+                }}
+                onDragEnter={(event) => {
+                  event.preventDefault();
+                  setDragging(true);
+                }}
+                onDragOver={(event) => {
+                  event.preventDefault();
+                  setDragging(true);
+                }}
+                onDragLeave={(event) => {
+                  event.preventDefault();
+                  setDragging(false);
+                }}
+                onDrop={handleDrop}
+                className={`cursor-pointer rounded-xl border border-dashed px-6 py-10 text-center transition ${
+                  dragging
+                    ? "border-gold bg-gold/10"
+                    : "border-border bg-muted/20 hover:border-gold/50 hover:bg-muted/40"
+                }`}
+              >
+                <div className="mx-auto flex size-12 items-center justify-center rounded-full border border-border bg-background">
+                  {dragging ? (
+                    <Upload className="size-5 text-gold" />
+                  ) : (
+                    <ImageIcon className="size-5 text-gold" />
+                  )}
+                </div>
+
+                <p className="mt-4 text-sm font-medium text-foreground">
+                  {dragging
+                    ? "Drop the image here"
+                    : "Upload a place image"}
+                </p>
+
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Drag and drop or click to browse
+                </p>
+
+                <p className="mt-3 text-[0.7rem] text-muted-foreground/70">
+                  JPEG, PNG, or WebP · Maximum 5 MB ·
+                  Landscape images work best
+                </p>
+              </div>
+            )}
           </Field>
-
-          <div>
-            <div className="mb-3 flex items-center gap-2">
-              <MapPin className="size-4 text-gold" />
-
-              <p className="text-sm font-medium text-foreground">
-                Map coordinates
-              </p>
-
-              <span className="text-xs text-muted-foreground">
-                Optional
-              </span>
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-2">
-              <Field label="Horizontal position">
-                <input
-                  type="number"
-                  value={mapX}
-                  onChange={(event) => setMapX(event.target.value)}
-                  placeholder="X coordinate"
-                  className={inputClassName}
-                />
-              </Field>
-
-              <Field label="Vertical position">
-                <input
-                  type="number"
-                  value={mapY}
-                  onChange={(event) => setMapY(event.target.value)}
-                  placeholder="Y coordinate"
-                  className={inputClassName}
-                />
-              </Field>
-            </div>
-          </div>
 
           <footer className="flex items-center justify-end gap-3 border-t border-border pt-6">
             <button
@@ -362,10 +539,14 @@ export function PlaceModal({
               disabled={saving}
               className="inline-flex items-center gap-2 rounded-lg bg-gold px-5 py-2.5 text-sm font-medium text-black transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {saving && <Loader2 className="size-4 animate-spin" />}
+              {saving && (
+                <Loader2 className="size-4 animate-spin" />
+              )}
 
               {saving
-                ? "Saving..."
+                ? imageFile
+                  ? "Uploading and saving..."
+                  : "Saving..."
                 : isEditing
                   ? "Save changes"
                   : "Add place"}

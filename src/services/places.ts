@@ -78,6 +78,8 @@ interface PlaceRow {
   updated_at: string;
 }
 
+const PLACE_IMAGE_BUCKET = "place-images";
+
 function mapPlace(row: PlaceRow): Place {
   return {
     id: row.id,
@@ -112,10 +114,12 @@ function toPlaceRow(input: SavePlaceInput) {
 
     summary: input.summary?.trim() ?? "",
     description: input.description?.trim() ?? "",
+
     aliases:
       input.aliases
         ?.map((alias) => alias.trim())
         .filter(Boolean) ?? [],
+
     image_path: input.imagePath?.trim() || null,
 
     map_x: input.mapX ?? null,
@@ -123,6 +127,76 @@ function toPlaceRow(input: SavePlaceInput) {
 
     updated_at: new Date().toISOString(),
   };
+}
+
+export async function uploadPlaceImage(
+  worldId: string,
+  file: File,
+): Promise<string> {
+  const allowedTypes = [
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+  ];
+
+  if (!allowedTypes.includes(file.type)) {
+    throw new Error(
+      "Choose a JPEG, PNG, or WebP image.",
+    );
+  }
+
+  const maximumSize = 5 * 1024 * 1024;
+
+  if (file.size > maximumSize) {
+    throw new Error(
+      "The image must be smaller than 5 MB.",
+    );
+  }
+
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    throw new Error(
+      "You must be signed in to upload an image.",
+    );
+  }
+
+  const extensionByType: Record<string, string> = {
+    "image/jpeg": "jpg",
+    "image/png": "png",
+    "image/webp": "webp",
+  };
+
+  const extension = extensionByType[file.type];
+  const filename = `${crypto.randomUUID()}.${extension}`;
+  const storagePath = `${user.id}/${worldId}/${filename}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from(PLACE_IMAGE_BUCKET)
+    .upload(storagePath, file, {
+      cacheControl: "3600",
+      contentType: file.type,
+      upsert: false,
+    });
+
+  if (uploadError) {
+    throw new Error(uploadError.message);
+  }
+
+  const { data } = supabase.storage
+    .from(PLACE_IMAGE_BUCKET)
+    .getPublicUrl(storagePath);
+
+  if (!data.publicUrl) {
+    throw new Error(
+      "The image uploaded, but its URL could not be created.",
+    );
+  }
+
+  return data.publicUrl;
 }
 
 export async function listPlaces(
