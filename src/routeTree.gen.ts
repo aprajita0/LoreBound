@@ -29,6 +29,7 @@ import { Route as DemoTerraPlacesRouteImport } from './routes/demo.terra.places'
 import { Route as DemoTerraRelationshipsRouteImport } from './routes/demo.terra.relationships'
 import { Route as DemoTerraSecretsRouteImport } from './routes/demo.terra.secrets'
 import { Route as DemoTerraTimelineRouteImport } from './routes/demo.terra.timeline'
+import { Route as WorldsWorldIdLoreRouteImport } from './routes/worlds.$worldId.lore'
 import { Route as WorldsWorldIdManuscriptRouteImport } from './routes/worlds.$worldId.manuscript'
 import { Route as WorldsWorldIdPlacesRouteImport } from './routes/worlds.$worldId.places'
 import { Route as WorldsWorldIdRelationshipsRouteImport } from './routes/worlds.$worldId.relationships'
@@ -149,6 +150,11 @@ const DemoTerraTimelineRoute = DemoTerraTimelineRouteImport.update({
   id: '/timeline',
   path: '/timeline',
   getParentRoute: () => DemoTerraRoute,
+} as any)
+const WorldsWorldIdLoreRoute = WorldsWorldIdLoreRouteImport.update({
+  id: '/lore',
+  path: '/lore',
+  getParentRoute: () => WorldsWorldIdRoute,
 } as any)
 const WorldsWorldIdManuscriptRoute = WorldsWorldIdManuscriptRouteImport.update({
   id: '/manuscript',
@@ -277,6 +283,7 @@ export interface FileRoutesByFullPath {
   '/demo/terra/relationships': typeof DemoTerraRelationshipsRoute
   '/demo/terra/secrets': typeof DemoTerraSecretsRoute
   '/demo/terra/timeline': typeof DemoTerraTimelineRoute
+  '/worlds/$worldId/lore': typeof WorldsWorldIdLoreRoute
   '/worlds/$worldId/manuscript': typeof WorldsWorldIdManuscriptRoute
   '/worlds/$worldId/places': typeof WorldsWorldIdPlacesRoute
   '/worlds/$worldId/relationships': typeof WorldsWorldIdRelationshipsRoute
@@ -317,6 +324,7 @@ export interface FileRoutesByTo {
   '/demo/terra/relationships': typeof DemoTerraRelationshipsRoute
   '/demo/terra/secrets': typeof DemoTerraSecretsRoute
   '/demo/terra/timeline': typeof DemoTerraTimelineRoute
+  '/worlds/$worldId/lore': typeof WorldsWorldIdLoreRoute
   '/worlds/$worldId/manuscript': typeof WorldsWorldIdManuscriptRoute
   '/worlds/$worldId/places': typeof WorldsWorldIdPlacesRoute
   '/worlds/$worldId/relationships': typeof WorldsWorldIdRelationshipsRoute
@@ -360,6 +368,7 @@ export interface FileRoutesById {
   '/demo/terra/relationships': typeof DemoTerraRelationshipsRoute
   '/demo/terra/secrets': typeof DemoTerraSecretsRoute
   '/demo/terra/timeline': typeof DemoTerraTimelineRoute
+  '/worlds/$worldId/lore': typeof WorldsWorldIdLoreRoute
   '/worlds/$worldId/manuscript': typeof WorldsWorldIdManuscriptRoute
   '/worlds/$worldId/places': typeof WorldsWorldIdPlacesRoute
   '/worlds/$worldId/relationships': typeof WorldsWorldIdRelationshipsRoute
@@ -404,6 +413,7 @@ export interface FileRouteTypes {
     | '/demo/terra/relationships'
     | '/demo/terra/secrets'
     | '/demo/terra/timeline'
+    | '/worlds/$worldId/lore'
     | '/worlds/$worldId/manuscript'
     | '/worlds/$worldId/places'
     | '/worlds/$worldId/relationships'
@@ -444,6 +454,7 @@ export interface FileRouteTypes {
     | '/demo/terra/relationships'
     | '/demo/terra/secrets'
     | '/demo/terra/timeline'
+    | '/worlds/$worldId/lore'
     | '/worlds/$worldId/manuscript'
     | '/worlds/$worldId/places'
     | '/worlds/$worldId/relationships'
@@ -486,6 +497,7 @@ export interface FileRouteTypes {
     | '/demo/terra/relationships'
     | '/demo/terra/secrets'
     | '/demo/terra/timeline'
+    | '/worlds/$worldId/lore'
     | '/worlds/$worldId/manuscript'
     | '/worlds/$worldId/places'
     | '/worlds/$worldId/relationships'
@@ -663,6 +675,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/demo/terra/timeline'
       preLoaderRoute: typeof DemoTerraTimelineRouteImport
       parentRoute: typeof DemoTerraRoute
+    }
+    '/worlds/$worldId/lore': {
+      id: '/worlds/$worldId/lore'
+      path: '/lore'
+      fullPath: '/worlds/$worldId/lore'
+      preLoaderRoute: typeof WorldsWorldIdLoreRouteImport
+      parentRoute: typeof WorldsWorldIdRoute
     }
     '/worlds/$worldId/manuscript': {
       id: '/worlds/$worldId/manuscript'
@@ -842,6 +861,7 @@ const DemoTerraRouteWithChildren = DemoTerraRoute._addFileChildren(
 )
 
 interface WorldsWorldIdRouteChildren {
+  WorldsWorldIdLoreRoute: typeof WorldsWorldIdLoreRoute
   WorldsWorldIdManuscriptRoute: typeof WorldsWorldIdManuscriptRoute
   WorldsWorldIdPlacesRoute: typeof WorldsWorldIdPlacesRoute
   WorldsWorldIdRelationshipsRoute: typeof WorldsWorldIdRelationshipsRoute
@@ -850,6 +870,7 @@ interface WorldsWorldIdRouteChildren {
 }
 
 const WorldsWorldIdRouteChildren: WorldsWorldIdRouteChildren = {
+  WorldsWorldIdLoreRoute: WorldsWorldIdLoreRoute,
   WorldsWorldIdManuscriptRoute: WorldsWorldIdManuscriptRoute,
   WorldsWorldIdPlacesRoute: WorldsWorldIdPlacesRoute,
   WorldsWorldIdRelationshipsRoute: WorldsWorldIdRelationshipsRoute,

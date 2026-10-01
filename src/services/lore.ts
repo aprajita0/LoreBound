@@ -22,7 +22,8 @@ export type LoreStatus =
   | "canonical"
   | "retired";
 
-export type LoreDocument = Record<string, unknown>;
+export type LoreDocument =
+  Record<string, unknown>;
 
 export interface LoreEntry {
   id: string;
@@ -120,7 +121,9 @@ const EMPTY_DOCUMENT: LoreDocument = {
   ],
 };
 
-function mapLoreEntry(row: LoreEntryRow): LoreEntry {
+function mapLoreEntry(
+  row: LoreEntryRow,
+): LoreEntry {
   return {
     id: row.id,
     worldId: row.world_id,
@@ -131,7 +134,8 @@ function mapLoreEntry(row: LoreEntryRow): LoreEntry {
     status: row.status,
 
     summary: row.summary ?? "",
-    contentJson: row.content_json ?? EMPTY_DOCUMENT,
+    contentJson:
+      row.content_json ?? EMPTY_DOCUMENT,
     plainText: row.plain_text ?? "",
 
     imagePath: row.image_path,
@@ -149,7 +153,9 @@ function mapLoreEntry(row: LoreEntryRow): LoreEntry {
   };
 }
 
-function normalizeIds(ids?: string[]): string[] {
+function normalizeIds(
+  ids?: string[],
+): string[] {
   return Array.from(
     new Set(
       (ids ?? [])
@@ -159,27 +165,34 @@ function normalizeIds(ids?: string[]): string[] {
   );
 }
 
-function toLoreEntryRow(input: SaveLoreEntryInput) {
+function toLoreEntryRow(
+  input: SaveLoreEntryInput,
+) {
   return {
     world_id: input.worldId,
-    parent_entry_id: input.parentEntryId ?? null,
+    parent_entry_id:
+      input.parentEntryId ?? null,
 
     title: input.title.trim(),
     category: input.category,
     status: input.status,
 
     summary: input.summary?.trim() ?? "",
-    content_json: input.contentJson ?? EMPTY_DOCUMENT,
-    plain_text: input.plainText?.trim() ?? "",
+    content_json:
+      input.contentJson ?? EMPTY_DOCUMENT,
+    plain_text:
+      input.plainText?.trim() ?? "",
 
-    image_path: input.imagePath?.trim() || null,
+    image_path:
+      input.imagePath?.trim() || null,
 
     tags:
       input.tags
         ?.map((tag) => tag.trim())
         .filter(Boolean) ?? [],
 
-    is_featured: input.isFeatured ?? false,
+    is_featured:
+      input.isFeatured ?? false,
     sort_order: input.sortOrder ?? 0,
 
     updated_at: new Date().toISOString(),
@@ -194,7 +207,9 @@ async function replaceLoreRelations(
     input.characterIds,
   );
 
-  const placeIds = normalizeIds(input.placeIds);
+  const placeIds = normalizeIds(
+    input.placeIds,
+  );
 
   const relatedEntryIds = normalizeIds(
     input.relatedEntryIds,
@@ -259,11 +274,13 @@ async function replaceLoreRelations(
     const { error } = await supabase
       .from("lore_entry_links")
       .insert(
-        relatedEntryIds.map((targetEntryId) => ({
-          source_entry_id: loreEntryId,
-          target_entry_id: targetEntryId,
-          relationship: "related",
-        })),
+        relatedEntryIds.map(
+          (targetEntryId) => ({
+            source_entry_id: loreEntryId,
+            target_entry_id: targetEntryId,
+            relationship: "related",
+          }),
+        ),
       );
 
     if (error) {
@@ -307,14 +324,20 @@ export async function uploadLoreImage(
     );
   }
 
-  const extensionByType: Record<string, string> = {
+  const extensionByType: Record<
+    string,
+    string
+  > = {
     "image/jpeg": "jpg",
     "image/png": "png",
     "image/webp": "webp",
   };
 
-  const extension = extensionByType[file.type];
-  const filename = `${crypto.randomUUID()}.${extension}`;
+  const extension =
+    extensionByType[file.type];
+
+  const filename =
+    `${crypto.randomUUID()}.${extension}`;
 
   const storagePath =
     `${user.id}/${worldId}/${filename}`;
@@ -366,9 +389,9 @@ export async function listLoreEntries(
     throw new Error(error.message);
   }
 
-  return ((data ?? []) as LoreEntryRow[]).map(
-    mapLoreEntry,
-  );
+  return (
+    (data ?? []) as LoreEntryRow[]
+  ).map(mapLoreEntry);
 }
 
 export async function getLoreEntry(
@@ -418,7 +441,9 @@ export async function getLoreEntry(
   }
 
   if (placeResult.error) {
-    throw new Error(placeResult.error.message);
+    throw new Error(
+      placeResult.error.message,
+    );
   }
 
   if (relatedEntryResult.error) {
@@ -428,11 +453,13 @@ export async function getLoreEntry(
   }
 
   entry.characterIds = (
-    (characterResult.data ?? []) as CharacterLinkRow[]
+    (characterResult.data ??
+      []) as CharacterLinkRow[]
   ).map((link) => link.character_id);
 
   entry.placeIds = (
-    (placeResult.data ?? []) as PlaceLinkRow[]
+    (placeResult.data ??
+      []) as PlaceLinkRow[]
   ).map((link) => link.place_id);
 
   entry.relatedEntryIds = (
@@ -467,7 +494,10 @@ export async function createLoreEntry(
   );
 
   try {
-    await replaceLoreRelations(entry.id, input);
+    await replaceLoreRelations(
+      entry.id,
+      input,
+    );
   } catch (relationError) {
     await supabase
       .from("lore_entries")
@@ -494,7 +524,9 @@ export async function updateLoreEntry(
     );
   }
 
-  if (input.parentEntryId === loreEntryId) {
+  if (
+    input.parentEntryId === loreEntryId
+  ) {
     throw new Error(
       "A lore entry cannot be its own parent.",
     );
@@ -539,7 +571,10 @@ export async function deleteLoreEntry(
 export function getLoreCategoryLabel(
   category: LoreCategory,
 ): string {
-  const labels: Record<LoreCategory, string> = {
+  const labels: Record<
+    LoreCategory,
+    string
+  > = {
     magic: "Magic",
     culture: "Culture",
     religion: "Religion",
@@ -563,7 +598,10 @@ export function getLoreCategoryLabel(
 export function getLoreStatusLabel(
   status: LoreStatus,
 ): string {
-  const labels: Record<LoreStatus, string> = {
+  const labels: Record<
+    LoreStatus,
+    string
+  > = {
     draft: "Draft",
     canonical: "Canonical",
     retired: "Retired",
