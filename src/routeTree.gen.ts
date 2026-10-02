@@ -33,6 +33,7 @@ import { Route as WorldsWorldIdLoreRouteImport } from './routes/worlds.$worldId.
 import { Route as WorldsWorldIdManuscriptRouteImport } from './routes/worlds.$worldId.manuscript'
 import { Route as WorldsWorldIdPlacesRouteImport } from './routes/worlds.$worldId.places'
 import { Route as WorldsWorldIdRelationshipsRouteImport } from './routes/worlds.$worldId.relationships'
+import { Route as WorldsWorldIdSecretsRouteImport } from './routes/worlds.$worldId.secrets'
 import { Route as WorldsWorldIdTimelineRouteImport } from './routes/worlds.$worldId.timeline'
 import { Route as WorldsTerraIndexRouteImport } from './routes/worlds.terra.index'
 import { Route as WorldsTerraContinuityRouteImport } from './routes/worlds.terra.continuity'
@@ -172,6 +173,11 @@ const WorldsWorldIdRelationshipsRoute =
     path: '/relationships',
     getParentRoute: () => WorldsWorldIdRoute,
   } as any)
+const WorldsWorldIdSecretsRoute = WorldsWorldIdSecretsRouteImport.update({
+  id: '/secrets',
+  path: '/secrets',
+  getParentRoute: () => WorldsWorldIdRoute,
+} as any)
 const WorldsWorldIdTimelineRoute = WorldsWorldIdTimelineRouteImport.update({
   id: '/timeline',
   path: '/timeline',
@@ -287,6 +293,7 @@ export interface FileRoutesByFullPath {
   '/worlds/$worldId/manuscript': typeof WorldsWorldIdManuscriptRoute
   '/worlds/$worldId/places': typeof WorldsWorldIdPlacesRoute
   '/worlds/$worldId/relationships': typeof WorldsWorldIdRelationshipsRoute
+  '/worlds/$worldId/secrets': typeof WorldsWorldIdSecretsRoute
   '/worlds/$worldId/timeline': typeof WorldsWorldIdTimelineRoute
   '/worlds/terra/continuity': typeof WorldsTerraContinuityRoute
   '/worlds/terra/knowledge': typeof WorldsTerraKnowledgeRoute
@@ -328,6 +335,7 @@ export interface FileRoutesByTo {
   '/worlds/$worldId/manuscript': typeof WorldsWorldIdManuscriptRoute
   '/worlds/$worldId/places': typeof WorldsWorldIdPlacesRoute
   '/worlds/$worldId/relationships': typeof WorldsWorldIdRelationshipsRoute
+  '/worlds/$worldId/secrets': typeof WorldsWorldIdSecretsRoute
   '/worlds/$worldId/timeline': typeof WorldsWorldIdTimelineRoute
   '/worlds/terra/continuity': typeof WorldsTerraContinuityRoute
   '/worlds/terra/knowledge': typeof WorldsTerraKnowledgeRoute
@@ -372,6 +380,7 @@ export interface FileRoutesById {
   '/worlds/$worldId/manuscript': typeof WorldsWorldIdManuscriptRoute
   '/worlds/$worldId/places': typeof WorldsWorldIdPlacesRoute
   '/worlds/$worldId/relationships': typeof WorldsWorldIdRelationshipsRoute
+  '/worlds/$worldId/secrets': typeof WorldsWorldIdSecretsRoute
   '/worlds/$worldId/timeline': typeof WorldsWorldIdTimelineRoute
   '/worlds/terra/continuity': typeof WorldsTerraContinuityRoute
   '/worlds/terra/knowledge': typeof WorldsTerraKnowledgeRoute
@@ -417,6 +426,7 @@ export interface FileRouteTypes {
     | '/worlds/$worldId/manuscript'
     | '/worlds/$worldId/places'
     | '/worlds/$worldId/relationships'
+    | '/worlds/$worldId/secrets'
     | '/worlds/$worldId/timeline'
     | '/worlds/terra/continuity'
     | '/worlds/terra/knowledge'
@@ -458,6 +468,7 @@ export interface FileRouteTypes {
     | '/worlds/$worldId/manuscript'
     | '/worlds/$worldId/places'
     | '/worlds/$worldId/relationships'
+    | '/worlds/$worldId/secrets'
     | '/worlds/$worldId/timeline'
     | '/worlds/terra/continuity'
     | '/worlds/terra/knowledge'
@@ -501,6 +512,7 @@ export interface FileRouteTypes {
     | '/worlds/$worldId/manuscript'
     | '/worlds/$worldId/places'
     | '/worlds/$worldId/relationships'
+    | '/worlds/$worldId/secrets'
     | '/worlds/$worldId/timeline'
     | '/worlds/terra/continuity'
     | '/worlds/terra/knowledge'
@@ -704,6 +716,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorldsWorldIdRelationshipsRouteImport
       parentRoute: typeof WorldsWorldIdRoute
     }
+    '/worlds/$worldId/secrets': {
+      id: '/worlds/$worldId/secrets'
+      path: '/secrets'
+      fullPath: '/worlds/$worldId/secrets'
+      preLoaderRoute: typeof WorldsWorldIdSecretsRouteImport
+      parentRoute: typeof WorldsWorldIdRoute
+    }
     '/worlds/$worldId/timeline': {
       id: '/worlds/$worldId/timeline'
       path: '/timeline'
@@ -865,6 +884,7 @@ interface WorldsWorldIdRouteChildren {
   WorldsWorldIdManuscriptRoute: typeof WorldsWorldIdManuscriptRoute
   WorldsWorldIdPlacesRoute: typeof WorldsWorldIdPlacesRoute
   WorldsWorldIdRelationshipsRoute: typeof WorldsWorldIdRelationshipsRoute
+  WorldsWorldIdSecretsRoute: typeof WorldsWorldIdSecretsRoute
   WorldsWorldIdTimelineRoute: typeof WorldsWorldIdTimelineRoute
   WorldsWorldIdCharactersIndexRoute: typeof WorldsWorldIdCharactersIndexRoute
 }
@@ -874,6 +894,7 @@ const WorldsWorldIdRouteChildren: WorldsWorldIdRouteChildren = {
   WorldsWorldIdManuscriptRoute: WorldsWorldIdManuscriptRoute,
   WorldsWorldIdPlacesRoute: WorldsWorldIdPlacesRoute,
   WorldsWorldIdRelationshipsRoute: WorldsWorldIdRelationshipsRoute,
+  WorldsWorldIdSecretsRoute: WorldsWorldIdSecretsRoute,
   WorldsWorldIdTimelineRoute: WorldsWorldIdTimelineRoute,
   WorldsWorldIdCharactersIndexRoute: WorldsWorldIdCharactersIndexRoute,
 }
